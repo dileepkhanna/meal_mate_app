@@ -1,23 +1,19 @@
-{% extends 'delivery/base.html' %}
-
-{% block title %}Restaurants - Meal Mate{% endblock %}
-
-{% block content %}
-<div class="fade-in-up">
+{% extends 'delivery/base.html' %} {% block title %}Restaurants - Meal Mate{% endblock %} {% block content %}
+<div class="">
     <h1><i class="fas fa-store"></i> Discover Restaurants</h1>
-    
+
     {% if restaurants %}
-        <div class="restaurant-grid">
-            {% for restaurant in restaurants %}
-                <div class="restaurant-card">
-                    <img src="{{ restaurant.picture }}" alt="{{ restaurant.name }}" class="restaurant-image">
-                    <div class="restaurant-info">
-                        <h3 class="restaurant-name">{{ restaurant.name }}</h3>
-                        <p class="restaurant-cuisine">
-                            <i class="fas fa-utensils"></i> {{ restaurant.cuisine }}
-                        </p>
-                        <div class="restaurant-rating">
-                            <span class="rating-stars">
+    <div class="restaurant-grid">
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card">
+            <img src="{{ restaurant.picture }}" alt="{{ restaurant.name }}" class="restaurant-image">
+            <div class="restaurant-info">
+                <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+                <p class="restaurant-cuisine">
+                    <i class="fas fa-utensils"></i> {{ restaurant.cuisine }}
+                </p>
+                <div class="restaurant-rating">
+                    <span class="rating-stars">
                                 {% for i in "12345" %}
                                     {% if forloop.counter <= restaurant.rating %}
                                         <i class="fas fa-star"></i>
@@ -26,21 +22,21 @@
                                     {% endif %}
                                 {% endfor %}
                             </span>
-                            <span>{{ restaurant.rating }}/5</span>
-                        </div>
-                        <a href="{% url 'customer_menu' restaurant.id username %}" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Menu
-                        </a>
-                    </div>
+                    <span>{{ restaurant.rating }}/5</span>
                 </div>
-            {% endfor %}
+                <a href="{% url 'customer_menu' restaurant.id username %}">
+                    <button class="btn btn-primary"><i class="fas fa-eye"></i> View Menu</button>
+                </a>
+            </div>
         </div>
+        {% endfor %}
+    </div>
     {% else %}
-        <div class="card" style="text-align: center;">
-            <i class="fas fa-store-slash" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
-            <h3 style="color: #666;">No restaurants available</h3>
-            <p style="color: #999;">Check back later for new restaurants!</p>
-        </div>
+    <div class="card" style="text-align: center;">
+        <i class="fas fa-store-slash" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+        <h3 style="color: #666;">No restaurants available</h3>
+        <p style="color: #999;">Check back later for new restaurants!</p>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
