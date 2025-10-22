@@ -1,0 +1,66 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}{{ restaurant.name }} Menu - Meal Mate{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+    <!-- Restaurant Header -->
+    <div class="card" style="text-align: center; margin-bottom: 2rem;">
+        <img src="{{ restaurant.picture }}" alt="{{ restaurant.name }}" 
+             style="width: 200px; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 1rem;">
+        <h1 style="color: #333; margin-bottom: 0.5rem;">{{ restaurant.name }}</h1>
+        <p style="color: #666; font-size: 1.2rem; margin-bottom: 1rem;">
+            <i class="fas fa-utensils"></i> {{ restaurant.cuisine }}
+        </p>
+        <div class="restaurant-rating" style="justify-content: center;">
+            <span class="rating-stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= restaurant.rating %}
+                        <i class="fas fa-star"></i>
+                    {% else %}
+                        <i class="far fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </span>
+            <span>{{ restaurant.rating }}/5</span>
+        </div>
+    </div>
+
+    <h2 style="text-align: center; color: white; margin-bottom: 2rem;">
+        <i class="fas fa-list"></i> Menu Items
+    </h2>
+
+    {% if menu_items %}
+        <div class="menu-grid">
+            {% for item in menu_items %}
+                <div class="menu-item">
+                    <img src="{{ item.picture }}" alt="{{ item.name }}" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-name">
+                            {{ item.name }}
+                            <span class="veg-indicator {% if item.is_veg %}veg{% else %}non-veg{% endif %}" 
+                                  title="{% if item.is_veg %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></span>
+                        </h3>
+                        <p class="menu-item-description">{{ item.description }}</p>
+                        <div class="menu-item-footer">
+                            <span class="menu-item-price">₹{{ item.price }}</span>
+                            <form method="POST" action="{% url 'add_to_cart' item.id username %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center;">
+            <i class="fas fa-utensils" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h3 style="color: #666;">No menu items available</h3>
+            <p style="color: #999;">This restaurant hasn't added any items yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

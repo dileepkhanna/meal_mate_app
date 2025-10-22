@@ -1,0 +1,29 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Admin Dashboard - Meal Mate{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+    <h1><i class="fas fa-user-shield"></i> Admin Dashboard</h1>
+    
+    <div class="admin-grid">
+        <div class="card" style="text-align: center; max-width: 400px;">
+            <i class="fas fa-plus-circle" style="font-size: 4rem; color: #7e22ce; margin-bottom: 1.5rem; display: block;"></i>
+            <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 1.5rem;">Add Restaurant</h3>
+            <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.6;">Add new restaurants to the platform</p>
+            <a href="{% url 'add_restaurant_page' %}" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-plus"></i> Add Restaurant
+            </a>
+        </div>
+        
+        <div class="card" style="text-align: center; max-width: 400px;">
+            <i class="fas fa-store" style="font-size: 4rem; color: #ec4899; margin-bottom: 1.5rem; display: block;"></i>
+            <h3 style="color: #1f2937; margin-bottom: 1rem; font-size: 1.5rem;">Manage Restaurants</h3>
+            <p style="color: #6b7280; margin-bottom: 2rem; line-height: 1.6;">View and manage existing restaurants</p>
+            <a href="{% url 'show_restaurant_page' %}" class="btn btn-secondary" style="width: 100%;">
+                <i class="fas fa-cog"></i> Manage Restaurants
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

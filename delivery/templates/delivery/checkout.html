@@ -1,0 +1,79 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Checkout - Meal Mate{% endblock %}
+
+{% block content %}
+<div class="cart-container fade-in-up">
+    <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+
+    {% if error %}
+        <div class="card" style="text-align: center;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f44336; margin-bottom: 1rem;"></i>
+            <h3 style="color: #f44336;">{{ error }}</h3>
+            <a href="/" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-store"></i> Browse Restaurants
+            </a>
+        </div>
+    {% else %}
+        <div class="card">
+            <h3 style="color: #333; margin-bottom: 1.5rem; text-align: center;">Order Summary</h3>
+            
+            {% for item in cart_items %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <strong>{{ item.name }}</strong>
+                        <p style="color: #666; margin: 0;">{{ item.description }}</p>
+                    </div>
+                    <span style="font-weight: bold; color: #667eea;">₹{{ item.price }}</span>
+                </div>
+            {% endfor %}
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; font-size: 1.3rem; font-weight: bold; color: #333;">
+                <span>Total Amount:</span>
+                <span style="color: #667eea;">₹{{ total_price }}</span>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h3 style="color: #333; margin-bottom: 1.5rem;">Payment</h3>
+            <button id="rzp-button" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 30px;">
+                <i class="fas fa-credit-card"></i> Pay ₹{{ total_price }} with Razorpay
+            </button>
+            <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                <i class="fas fa-shield-alt"></i> Secure payment powered by Razorpay
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key_id }}",
+        "amount": "{{ total_price|floatformat:2|add:'0.00'|floatformat:2 }}00",
+        "currency": "INR",
+        "name": "Meal Mate",
+        "description": "Order Payment",
+        "order_id": "{{ order_id }}",
+        "handler": function (response) {
+            // Show success message
+            alert("Payment Successful! Your order has been placed.");
+            window.location.href = "{% url 'orders' username %}";
+        },
+        "prefill": {
+            "name": "{{ username }}",
+            "email": "customer@example.com",
+            "contact": "9999999999"
+        },
+        "theme": {
+            "color": "#667eea"
+        }
+    };
+    var rzp = new Razorpay(options);
+
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    }
+</script>
+{% endblock %}

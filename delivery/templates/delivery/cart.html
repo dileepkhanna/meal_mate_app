@@ -1,0 +1,85 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Your Cart - Meal Mate{% endblock %}
+
+{% block content %}
+<div class="cart-container fade-in-up">
+    <h1><i class="fas fa-shopping-cart"></i> Your Cart</h1>
+
+    {% if items %}
+        {% for item in items %}
+            <div class="cart-item">
+                <img src="{{ item.picture }}" alt="{{ item.name }}" class="cart-item-image">
+                <div class="cart-item-details">
+                    <h3 class="cart-item-name">{{ item.name }}</h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">{{ item.description }}</p>
+                    <p class="cart-item-price">₹<span class="price">{{ item.price }}</span></p>
+                </div>
+                <div class="quantity-controls">
+                    <button type="button" onclick="changeQty('{{ forloop.counter0 }}', -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" id="qty-{{ forloop.counter0 }}" value="1" min="1" 
+                           onchange="updateRow('{{ forloop.counter0 }}')">
+                    <button type="button" onclick="changeQty('{{ forloop.counter0 }}', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div style="text-align: right;">
+                    <strong>₹<span id="row-total-{{ forloop.counter0 }}">{{ item.price }}</span></strong>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="cart-total">
+            <div class="total-amount">
+                Total: ₹<span id="grand-total">{{ total_price }}</span>
+            </div>
+            <form method="POST" action="{% url 'checkout' username %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" style="margin-right: 1rem;">
+                    <i class="fas fa-credit-card"></i> Proceed to Checkout
+                </button>
+                <a href="{% if items %}{% url 'customer_menu' items.0.restaurant.id username %}{% else %}/{% endif %}" 
+                   class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+            </form>
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center;">
+            <i class="fas fa-shopping-cart" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+            <h3 style="color: #666;">Your cart is empty!</h3>
+            <p style="color: #999; margin-bottom: 2rem;">Add some delicious items to get started.</p>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-store"></i> Browse Restaurants
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function changeQty(index, delta) {
+        const qtyInput = document.getElementById("qty-" + index);
+        let value = parseInt(qtyInput.value) + delta;
+        if (value < 1) value = 1;
+        qtyInput.value = value;
+        updateRow(index);
+    }
+
+    function updateRow(index) {
+        const price = parseFloat(document.getElementsByClassName("price")[index].innerText);
+        const qty = parseInt(document.getElementById("qty-" + index).value);
+        const rowTotal = price * qty;
+        document.getElementById("row-total-" + index).innerText = rowTotal.toFixed(2);
+        updateGrandTotal();
+    }
+
+    function updateGrandTotal() {
+        let totals = document.querySelectorAll("[id^='row-total-']");
+        let sum = 0;
+        totals.forEach(el => sum += parseFloat(el.innerText));
+        document.getElementById("grand-total").innerText = sum.toFixed(2);
+    }
+</script>
+{% endblock %}

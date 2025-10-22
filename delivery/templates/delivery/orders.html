@@ -1,0 +1,54 @@
+{% extends 'delivery/base.html' %}
+
+{% block title %}Order Confirmed - Meal Mate{% endblock %}
+
+{% block content %}
+<div class="fade-in-up" style="text-align: center;">
+    <div class="card" style="max-width: 600px; margin: 2rem auto;">
+        <i class="fas fa-check-circle" style="font-size: 4rem; color: #4caf50; margin-bottom: 1rem;"></i>
+        <h1 style="color: #333; margin-bottom: 1rem;">Order Confirmed!</h1>
+        <p style="color: #666; font-size: 1.2rem; margin-bottom: 2rem;">
+            Thank you for your order, <strong>{{ username }}</strong>!
+        </p>
+        
+        {% if cart_items %}
+            <div style="text-align: left; margin: 2rem 0;">
+                <h3 style="color: #333; margin-bottom: 1rem;">Order Details:</h3>
+                {% for item in cart_items %}
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <span>{{ item.name }}</span>
+                        <span style="font-weight: bold;">₹{{ item.price }}</span>
+                    </div>
+                {% endfor %}
+                <div style="display: flex; justify-content: space-between; padding: 1rem 0; font-weight: bold; font-size: 1.2rem; color: #667eea;">
+                    <span>Total:</span>
+                    <span>₹{{ total_price }}</span>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+            <h3 style="color: #333; margin-bottom: 1rem;">
+                <i class="fas fa-map-marker-alt"></i> Delivery Address
+            </h3>
+            <p style="color: #666;">{{ customer.address }}</p>
+        </div>
+        
+        <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+            <i class="fas fa-truck" style="color: #4caf50; margin-right: 0.5rem;"></i>
+            <strong style="color: #4caf50;">Your order will be delivered in 30-45 minutes!</strong>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-store"></i> Browse More Restaurants
+            </a>
+            {% if cart_items %}
+                <a href="{% url 'customer_menu' cart_items.0.restaurant.id username %}" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Order Again
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
