@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.shortcuts import render
  
 urlpatterns = [
     # Home and authentication paths
@@ -8,6 +9,8 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.handle_login, name='handle_login'),
     path('signup/submit/', views.handle_signup, name='handle_signup'),
+    path('admin/home/', views.admin_home, name='admin_home'),
+    path('customer/<str:username>/home/', views.customer_home, name='customer_home'),
 
     # Restaurant-related paths
     path('restaurants/add', views.add_restaurant_page, name='add_restaurant_page'),
@@ -25,10 +28,16 @@ urlpatterns = [
     path('restaurants/<int:restaurant_id>/menu/customer/<str:username>/', views.customer_menu, name='customer_menu'),
     path('cart/<str:username>/', views.show_cart_page, name='show_cart_page'),
     path('cart/<int:item_id>/add/<str:username>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/<int:item_id>/remove/<str:username>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/<int:item_id>/update/<str:username>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('cart/clear/<str:username>/', views.clear_cart, name='clear_cart'),
 
     path('checkout/<str:username>/', views.checkout, name='checkout'),
 
     path('orders/<str:username>/', views.orders, name='orders'),
+    
+    # Debug route
+    path('debug-cart/', lambda request: render(request, 'delivery/debug_cart.html'), name='debug_cart'),
 
 
 ]

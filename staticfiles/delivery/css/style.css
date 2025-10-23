@@ -1,0 +1,1521 @@
+/* ================================
+   COLOR PALETTE
+================================ */
+:root {
+    --burgundy: #800020;
+    --deep-black: #1C1C1C;
+    --champagne-gold: #D4AF37;
+    --walnut-brown: #4E342E;
+    --soft-cream: #F5E6CC;
+}
+
+/* ================================
+   GLOBAL STYLES
+================================ */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--walnut-brown);
+    color: var(--soft-cream);
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ================================
+   NAVBAR
+================================ */
+.navbar {
+    background-color: var(--burgundy);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    top: 0;
+    z-index: 100;
+    height: 100px;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1500px;
+    padding: 15px 30px;
+    margin-top: 23px;
+}
+
+.logo {
+    color: var(--champagne-gold);
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s;
+}
+
+.logo:hover {
+    color: var(--soft-cream);
+}
+
+.nav-links a {
+    color: var(--soft-cream);
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--champagne-gold);
+}
+
+.user-welcome {
+    color: var(--champagne-gold);
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+/* ================================
+   MESSAGES
+================================ */
+.messages {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.message {
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.message.success {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+    border-left: 5px solid var(--burgundy);
+}
+
+.message.error {
+    background-color: red;
+    color: var(--soft-cream);
+    border-left: 5px solid var(--champagne-gold);
+}
+
+.message.info {
+    background-color: var(--deep-black);
+    color: var(--soft-cream);
+    border-left: 5px solid var(--champagne-gold);
+}
+
+/* ================================
+   BUTTON STYLES
+================================ */
+button,
+.btn {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover,
+.btn:hover {
+    background-color: var(--soft-cream);
+    color: var(--burgundy);
+}
+
+.welcome-actions a {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.welcome-actions a:hover {
+    background-color: var(--soft-cream);
+    color: var(--burgundy);
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+.container h1,
+.container h2 {
+    color: var(--champagne-gold);
+}
+
+.container p {
+    line-height: 1.6;
+    color: var(--soft-cream);
+}
+
+.container {
+    margin-top: 0px;
+}
+
+/* ================================
+   WELCOME SECTION
+================================ */
+.welcome-section {
+    background: url('../images/banner.jpg') no-repeat center center;
+    background-size: cover;
+    text-align: center;
+    height: 50vh;
+    width: 100%;
+}
+
+.welcome-actions a {
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px 20px;
+}
+
+/* ================================
+   WHY CHOOSE US
+================================ */
+.Why-Choose {
+    margin-top: 5em;
+    text-align: center;
+}
+
+.Why-Choose h2 {
+    margin-bottom: 30px;
+}
+
+.features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.features-grid div {
+    border-radius: 16px;
+    width: 300px;
+    transform: scale(1);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    background-color: var(--soft-cream);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.features-grid div:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(224, 83, 83, 0.25);
+}
+
+/* ================================
+   FOOTER
+================================ */
+footer {
+    background-color: var(--walnut-brown);
+    text-align: center;
+    padding: 15px;
+    color: var(--soft-cream);
+    font-size: 14px;
+}
+
+/* ================================
+   FORM CONTAINER
+================================ */
+.form-container {
+    width: 400px;
+    background: var(--soft-cream);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    animation: fadeUp 0.6s ease;
+    margin-left: 33%;
+    margin-top: 2%;
+}
+
+/* ================================
+   TITLE
+================================ */
+.form-container h2 {
+    color: var(--burgundy);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+}
+
+/* ================================
+   FORM ELEMENTS
+================================ */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: var(--walnut-brown);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.form-group input {
+    width: 90%;
+    padding: 0.9rem 1rem;
+    border: 2px solid #e1d2b0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 1rem;
+    color: var(--deep-black);
+    transition: 0.3s;
+}
+
+.checkbox-group {
+    display: flex;
+}
+
+.checkbox-group input {
+    padding: 0.9rem 1rem;
+    border: 2px solid #e1d2b0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 1rem;
+    color: var(--deep-black);
+    transition: 0.3s;
+    margin-left: 85%;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--burgundy);
+    box-shadow: 0 0 6px rgba(128, 0, 32, 0.3);
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.form-actions {
+    margin-top: 1rem;
+}
+
+.btn {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--burgundy);
+    color: var(--soft-cream);
+}
+
+.btn-primary:hover {
+    background: var(--walnut-brown);
+    color: var(--champagne-gold);
+}
+
+/* ================================
+   FOOTER TEXT
+================================ */
+.form-container p {
+    color: var(--deep-black);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ================================
+   ANIMATION
+================================ */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================
+   PAGE TITLE
+================================ */
+.fade-in-up h1 {
+    text-align: center;
+    color: var(--burgundy);
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 2rem 0 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ================================
+   RESTAURANT GRID
+================================ */
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 90%;
+    margin: 0 auto 3rem;
+}
+
+/* ================================
+   RESTAURANT CARD
+================================ */
+.restaurant-card {
+    background: var(--deep-black);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--champagne-gold);
+}
+
+.restaurant-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* ================================
+   RESTAURANT IMAGE
+================================ */
+.restaurant-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* ================================
+   RESTAURANT INFO
+================================ */
+.restaurant-info {
+    padding: 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.restaurant-name {
+    color: var(--champagne-gold);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.restaurant-cuisine {
+    color: var(--soft-cream);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+/* ================================
+   RATING STARS
+================================ */
+.restaurant-rating {
+    margin-bottom: 1rem;
+    color: var(--champagne-gold);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.restaurant-rating .rating-stars i {
+    margin: 0 1px;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--burgundy);
+    color: var(--soft-cream);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--walnut-brown);
+    color: var(--champagne-gold);
+    box-shadow: 0 0 10px rgba(128, 0, 32, 0.3);
+}
+
+/* ================================
+   EMPTY STATE CARD
+================================ */
+.card {
+    width: 40%;
+    height: 60vh;
+    margin: 4rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    color: var(--burgundy);
+    margin-bottom: 0.5rem;
+}
+
+/* ================================
+   ANIMATION
+================================ */
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}/
+* ================================
+   RESPONSIVE DESIGN - MOBILE & TABLET ONLY
+================================ */
+
+/* TABLET RESPONSIVE (768px and below) */
+@media (max-width: 768px) {
+    .nav-content {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 10px;
+        padding: 10px 20px;
+    }
+    
+    .navbar {
+        height: auto;
+    }
+    
+    .nav-links {
+        margin-top: 10px;
+    }
+    
+    .nav-links a {
+        display: block;
+        margin: 8px 0;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+    
+    .features-grid {
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .features-grid div {
+        width: 90%;
+        max-width: 350px;
+    }
+    
+    .form-container {
+        width: 90%;
+        margin: 2% auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .restaurant-grid {
+        grid-template-columns: repeat(2, 1fr);
+        width: 95%;
+        gap: 1.5rem;
+    }
+    
+    .fade-in-up h1 {
+        font-size: 1.8rem;
+    }
+    
+    .restaurant-info {
+        padding: 1rem;
+    }
+    
+    .welcome-section {
+        height: 40vh;
+    }
+    
+    .Why-Choose {
+        margin-top: 3rem;
+        padding: 0 1rem;
+    }
+}
+
+/* MOBILE RESPONSIVE (480px and below) */
+@media (max-width: 480px) {
+    .form-container {
+        width: 90%;
+        padding: 2rem 1.2rem;
+        margin: 1rem auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .form-container h2 {
+        font-size: 1.6rem;
+    }
+    
+    .nav-content {
+        padding: 8px 15px;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+    
+    .nav-links a {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+    
+    .features-grid div {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .restaurant-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .restaurant-card {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+    
+    .fade-in-up h1 {
+        font-size: 1.5rem;
+    }
+    
+    .Why-Choose h2 {
+        font-size: 1.8rem;
+    }
+    
+    .welcome-section {
+        height: 35vh;
+    }
+    
+    .welcome-actions a {
+        display: block;
+        margin: 10px auto;
+        width: 80%;
+        max-width: 250px;
+        text-align: center;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .messages {
+        padding: 0 15px;
+    }
+    
+    .card {
+        width: 90%;
+        margin: 2rem auto;
+        padding: 1.5rem;
+    }
+}
+
+/* EXTRA SMALL MOBILE (320px and below) */
+@media (max-width: 320px) {
+    .form-container {
+        width: 95%;
+        padding: 1.5rem 1rem;
+    }
+    
+    .form-container h2 {
+        font-size: 1.4rem;
+    }
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .features-grid div {
+        width: 100%;
+        padding: 12px;
+    }
+    
+    .Why-Choose h2 {
+        font-size: 1.5rem;
+    }
+    
+    .fade-in-up h1 {
+        font-size: 1.3rem;
+    }
+    
+    .welcome-actions a {
+        width: 90%;
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+
+/* ================================
+   UTILITY CLASSES
+================================ */
+.text-center {
+    text-align: center;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================================
+   ACCESSIBILITY
+================================ */
+.nav-links a:focus,
+.welcome-actions a:focus,
+.btn:focus,
+button:focus {
+    outline: 3px solid var(--champagne-gold);
+    outline-offset: 2px;
+}
+
+/* ================================
+   SMOOTH SCROLLING
+================================ */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ================================
+   SELECTION STYLES
+================================ */
+::selection {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+}
+
+::-moz-selection {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+}
+/* 
+================================
+   ENHANCED CART STYLES
+================================ */
+.cart-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--champagne-gold);
+}
+
+.cart-header h1 {
+    color: var(--champagne-gold);
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.cart-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-item-count {
+    color: var(--soft-cream);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background-color: var(--deep-black);
+    border-radius: 20px;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--deep-black);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.cart-item:hover {
+    border-color: var(--champagne-gold);
+    transform: translateY(-2px);
+}
+
+.cart-item-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 1.5rem;
+    border: 2px solid var(--champagne-gold);
+}
+
+.cart-item-details {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.cart-item-name {
+    color: var(--champagne-gold);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.cart-item-desc {
+    color: var(--soft-cream);
+    margin: 0 0 0.5rem 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.cart-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.cart-item-restaurant {
+    color: var(--champagne-gold);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.veg-indicator {
+    color: #4CAF50;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-radius: 10px;
+}
+
+.non-veg-indicator {
+    color: #FF5722;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    background-color: rgba(255, 87, 34, 0.1);
+    border-radius: 10px;
+}
+
+.cart-item-price {
+    color: var(--champagne-gold);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--walnut-brown);
+    border-radius: 25px;
+    padding: 0.5rem;
+}
+
+.inc-dec-btn {
+    background-color: var(--champagne-gold);
+    color: var(--deep-black);
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.inc-dec-btn:hover {
+    background-color: var(--burgundy);
+    color: var(--champagne-gold);
+    transform: scale(1.1);
+}
+
+.cart-quantity input {
+    width: 50px;
+    text-align: center;
+    border: 2px solid var(--champagne-gold);
+    background-color: var(--deep-black);
+    color: var(--soft-cream);
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-weight: 600;
+}
+
+.cart-row-total {
+    color: var(--champagne-gold);
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.cart-item-remove .btn {
+    padding: 0.5rem;
+    min-width: 40px;
+    border-radius: 8px;
+}
+
+.cart-summary {
+    background-color: var(--deep-black);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--champagne-gold);
+}
+
+.cart-summary-details {
+    margin-bottom: 2rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--walnut-brown);
+    color: var(--soft-cream);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.total-row {
+    font-size: 1.3rem;
+    color: var(--champagne-gold);
+    border-top: 2px solid var(--champagne-gold);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.delivery-fee {
+    color: var(--champagne-gold);
+    font-weight: 600;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: 2px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+/* ================================
+   CART EMPTY STATE
+================================ */
+.cart-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--deep-black);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cart-empty i {
+    font-size: 4rem;
+    color: var(--champagne-gold);
+    margin-bottom: 1rem;
+}
+
+.cart-empty h3 {
+    color: var(--champagne-gold);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.cart-empty p {
+    color: var(--soft-cream);
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+@media (max-width: 768px) {
+    .cart-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .cart-item-image {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .cart-item-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+    }
+    
+    .cart-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-item {
+    animation: fadeInUp 0.3s ease;
+}
+
+/* ================================
+   LOADING STATES
+================================ */
+.cart-item.removing {
+    opacity: 0.5;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}/
+* ================================
+   CART BADGE IN NAVBAR
+================================ */
+.cart-link {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    animation: pulse 2s infinite;
+    z-index: 1000;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+/* 
+================================
+   BREADCRUMB NAVIGATION
+================================ */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a {
+    color: var(--champagne-gold);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--soft-cream);
+    text-decoration: underline;
+}
+
+.breadcrumb .separator {
+    color: var(--soft-cream);
+    opacity: 0.5;
+}
+
+.breadcrumb .current {
+    color: var(--soft-cream);
+    font-weight: 600;
+}
+
+.breadcrumb i {
+    margin-right: 0.3rem;
+}
+/* =
+===============================
+   CUSTOMER MENU PAGE STYLES
+================================ */
+.menu-page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Restaurant Header Card */
+.restaurant-header-card {
+    background: var(--deep-black);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--champagne-gold);
+}
+
+.restaurant-header-image {
+    flex-shrink: 0;
+}
+
+.restaurant-header-image img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    border: 3px solid var(--champagne-gold);
+}
+
+.restaurant-header-info {
+    flex: 1;
+}
+
+.restaurant-header-name {
+    color: var(--champagne-gold);
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+}
+
+.restaurant-header-cuisine {
+    color: var(--soft-cream);
+    font-size: 1.3rem;
+    margin: 0 0 1rem 0;
+    opacity: 0.9;
+}
+
+.restaurant-header-cuisine i {
+    color: var(--champagne-gold);
+    margin-right: 0.5rem;
+}
+
+.restaurant-header-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+}
+
+.restaurant-header-rating .rating-stars {
+    color: var(--champagne-gold);
+}
+
+.restaurant-header-rating .rating-value {
+    color: var(--soft-cream);
+    font-weight: 600;
+}
+
+/* Menu Section Header */
+.menu-section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.menu-section-header h2 {
+    color: var(--champagne-gold);
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.menu-section-header p {
+    color: var(--soft-cream);
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* Menu Items Grid */
+.menu-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Menu Card */
+.menu-card {
+    background: var(--deep-black);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--champagne-gold);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.3);
+}
+
+.menu-card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+}
+
+.menu-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.menu-card:hover .menu-card-image {
+    transform: scale(1.1);
+}
+
+.menu-card-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.badge-veg {
+    background: #4CAF50;
+    color: white;
+}
+
+.badge-non-veg {
+    background: #FF5722;
+    color: white;
+}
+
+.menu-card-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-card-title {
+    color: var(--champagne-gold);
+    font-size: 1.4rem;
+    margin: 0 0 0.8rem 0;
+    font-weight: 600;
+}
+
+.menu-card-description {
+    color: var(--soft-cream);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem 0;
+    opacity: 0.8;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.menu-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.menu-card-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-label {
+    color: var(--soft-cream);
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.price-value {
+    color: var(--champagne-gold);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.add-to-cart-form {
+    margin: 0;
+}
+
+.btn-add-to-cart {
+    background: var(--champagne-gold);
+    color: var(--deep-black);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-add-to-cart:hover {
+    background: var(--burgundy);
+    color: var(--champagne-gold);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(128, 0, 32, 0.4);
+}
+
+.btn-add-to-cart:active {
+    transform: scale(0.98);
+}
+
+/* Empty State */
+.empty-menu-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--deep-black);
+    border-radius: 15px;
+    border: 2px dashed var(--champagne-gold);
+}
+
+.empty-menu-state i {
+    font-size: 4rem;
+    color: var(--champagne-gold);
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-menu-state h3 {
+    color: var(--champagne-gold);
+    font-size: 1.8rem;
+    margin: 0 0 1rem 0;
+}
+
+.empty-menu-state p {
+    color: var(--soft-cream);
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.7;
+}
+
+/* ================================
+   RESPONSIVE DESIGN - MENU PAGE
+================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .menu-items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .restaurant-header-card {
+        padding: 1.5rem;
+    }
+    
+    .restaurant-header-name {
+        font-size: 2rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .menu-page-container {
+        padding: 1rem;
+    }
+    
+    .restaurant-header-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .restaurant-header-image img {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .restaurant-header-name {
+        font-size: 1.8rem;
+    }
+    
+    .restaurant-header-cuisine {
+        font-size: 1.1rem;
+    }
+    
+    .restaurant-header-rating {
+        justify-content: center;
+    }
+    
+    .menu-section-header h2 {
+        font-size: 1.6rem;
+    }
+    
+    .menu-items-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .menu-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .menu-card-price {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .btn-add-to-cart {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .restaurant-header-image img {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .restaurant-header-name {
+        font-size: 1.5rem;
+    }
+    
+    .menu-card-image-wrapper {
+        height: 180px;
+    }
+    
+    .menu-card-title {
+        font-size: 1.2rem;
+    }
+    
+    .price-value {
+        font-size: 1.5rem;
+    }
+}

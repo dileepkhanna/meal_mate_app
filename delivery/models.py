@@ -57,10 +57,30 @@ class MenuItem(models.Model):
     
 class Cart(models.Model):
     customer = models.OneToOneField(Customer, on_delete = models.CASCADE, related_name = "cart")
-    items = models.ManyToManyField("MenuItem",related_name="carts")
 
     def total_price(self):
-        return self.items.aggregate(total=Sum('price'))['total'] or 0.00
+        total = 0
+        for cart_item in self.cart_items.all():
+            total += cart_item.get_total_price()
+        return total
+
+    def total_items(self):
+        return sum(cart_item.quantity for cart_item in self.cart_items.all())
 
     def __str__(self):
         return f"Cart for {self.customer.username}"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('cart', 'menu_item')
+
+    def get_total_price(self):
+        return self.menu_item.price * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity}x {self.menu_item.name} in {self.cart.customer.username}'s cart"

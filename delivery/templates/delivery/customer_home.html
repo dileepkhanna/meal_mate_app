@@ -1,8 +1,9 @@
 {% extends 'delivery/base.html' %} {% block title %}Restaurants - Meal Mate{% endblock %} {% block content %}
 <div class="">
-    <h1><i class="fas fa-store"></i> Discover Restaurants</h1>
+
 
     {% if restaurants %}
+    <h1 style="text-align: center;"><i class="fas fa-store"></i> Discover Restaurants</h1>
     <div class="restaurant-grid">
         {% for restaurant in restaurants %}
         <div class="restaurant-card">
@@ -14,14 +15,13 @@
                 </p>
                 <div class="restaurant-rating">
                     <span class="rating-stars">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= restaurant.rating %}
-                                        <i class="fas fa-star"></i>
-                                    {% else %}
-                                        <i class="far fa-star"></i>
-                                    {% endif %}
-                                {% endfor %}
-                            </span>
+                        {% for i in "12345" %}
+                        {% if forloop.counter <= restaurant.rating %} <i class="fas fa-star"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                    </span>
                     <span>{{ restaurant.rating }}/5</span>
                 </div>
                 <a href="{% url 'customer_menu' restaurant.id username %}">

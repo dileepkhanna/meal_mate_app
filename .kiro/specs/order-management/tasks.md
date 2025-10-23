@@ -1,0 +1,200 @@
+# Implementation Plan
+
+- [ ] 1. Create Order and OrderItem models with status management
+  - Create Order model with status choices (PENDING, CONFIRMED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELLED)
+  - Add payment status choices (PENDING, COMPLETED, FAILED, REFUNDED)
+  - Include fields: order_number, customer FK, restaurant FK, delivery_address, contact_number, special_instructions
+  - Add pricing fields: subtotal, delivery_fee, total_amount
+  - Add timestamp fields: created_at, confirmed_at, preparing_at, out_for_delivery_at, delivered_at, cancelled_at
+  - Create OrderItem model with order FK, menu_item FK (PROTECT), quantity, price_at_order, item_total
+  - Implement generate_order_number() method to create unique order numbers in format ORD-YYYYMMDD-XXXX
+  - Implement can_be_cancelled() method to check if order status is PENDING
+  - Implement get_estimated_delivery_time() method based on current status
+  - Implement get_total_preparation_time() method to calculate time from order to delivery
+  - Implement get_next_status_action() method for status transitions
+  - Register models in admin.py for admin interface access
+  - _Requirements: 1.1, 1.2, 1.3, 1.5, 2.1, 2.2, 4.1, 4.3, 6.1, 6.2, 6.4, 7.2, 7.3_
+
+- [ ] 2. Implement order placement functionality
+  - Create place_order view to handle order creation from cart
+  - Validate that cart has items before creating order
+  - Extract delivery address and contact number from customer profile
+  - Calculate subtotal from cart items
+  - Set delivery fee (default 30.00)
+  - Calculate total_amount (subtotal + delivery_fee)
+  - Create Order instance with PENDING status and PENDING payment_status
+  - Generate unique order_number using the model method
+  - Create OrderItem instances for each CartItem with price_at_order snapshot
+  - Clear cart after successful order creation
+  - Add success message and redirect to order confirmation page
+  - Handle empty cart error with appropriate message
+  - Add URL pattern: path('order/place/<str:username>/', views.place_order, name='place_order')
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 10.3_
+
+- [ ] 3. Create checkout page with special instructions
+  - Update existing checkout.html template to include special instructions textarea
+  - Add textarea field with maxlength=500 for special instructions
+  - Display cart items, subtotal, delivery fee, and grand total
+  - Add delivery address and contact number fields (pre-filled from customer profile)
+  - Include form submission to place_order view
+  - Add CSRF token for security
+  - Style the form with Bootstrap 5 classes for consistency
+  - _Requirements: 1.2, 10.1, 10.2_
+
+- [ ] 4. Implement customer order tracking views
+  - Create customer_orders view to display active orders (not DELIVERED or CANCELLED)
+  - Fetch orders for the logged-in customer using customer FK
+  - Order by created_at descending
+  - Create order_detail view to show complete order information
+  - Display order_number, restaurant name, status, items with quantities and prices
+  - Show delivery address, contact number, special instructions
+  - Display status timeline with timestamps
+  - Show estimated delivery time using get_estimated_delivery_time()
+  - Add conditional cancel button if can_be_cancelled() returns True
+  - Add URL patterns for customer_orders and order_detail
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 4.1_
+
+- [ ] 5. Create customer order tracking templates
+  - Create customer_orders.html template with active orders list
+  - Display order cards with order_number, restaurant name, status badge, total_amount, created_at
+  - Add status badges with color coding (pending=warning, confirmed=info, preparing=primary, out_for_delivery=success)
+  - Include link to order_detail page for each order
+  - Create order_detail.html template with complete order information
+  - Display order header with order_number and status
+  - Show restaurant information
+  - List all order items with quantities, prices, and item totals
+  - Display delivery information (address, contact)
+  - Show special instructions prominently or "No special instructions"
+  - Add status timeline/progress bar showing order progression
+  - Include cancel button (conditional based on can_be_cancelled)
+  - Style with Bootstrap 5 for responsive design
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 4.1, 10.4, 10.5_
+
+- [ ] 6. Implement order cancellation functionality
+  - Create cancel_order view to handle order cancellation
+  - Verify order belongs to the requesting customer
+  - Check if order can be cancelled using can_be_cancelled() method
+  - If cancellable, update status to CANCELLED and set cancelled_at timestamp
+  - If not cancellable, display error message
+  - Add confirmation modal in template before cancellation
+  - Redirect back to customer_orders page with success/error message
+  - Add URL pattern: path('orders/<str:username>/<int:order_id>/cancel/', views.cancel_order, name='cancel_order')
+  - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+
+- [ ] 7. Implement order history with filtering
+  - Create order_history view to display all customer orders
+  - Fetch all orders for customer in reverse chronological order
+  - Implement date range filtering (from_date, to_date query parameters)
+  - Implement restaurant name filtering (restaurant query parameter)
+  - Apply filters if provided in GET request
+  - Pass filtered orders to template
+  - Create order_history.html template with filter form
+  - Add date range inputs (from_date, to_date)
+  - Add restaurant dropdown filter populated with restaurants customer has ordered from
+  - Display order summary cards with date, restaurant, total, status
+  - Link each order to order_detail page
+  - Add URL pattern: path('orders/<str:username>/history/', views.order_history, name='order_history')
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [ ] 8. Create restaurant owner orders dashboard
+  - Create restaurant_orders view for restaurant owners
+  - Fetch all orders for the specific restaurant
+  - Group orders by status (PENDING, CONFIRMED, PREPARING, OUT_FOR_DELIVERY, DELIVERED)
+  - Sort PENDING orders at the top
+  - Use select_related for customer and prefetch_related for items optimization
+  - Create restaurant_orders.html template with tabbed interface
+  - Create tabs for each status category
+  - Display order cards showing order_number, customer name, items count, total_amount, created_at
+  - Show customer delivery address and contact number
+  - Highlight special instructions prominently
+  - Add quick action buttons for status updates based on current status
+  - Add URL pattern: path('restaurant/<int:restaurant_id>/orders/', views.restaurant_orders, name='restaurant_orders')
+  - _Requirements: 5.1, 5.2, 5.3, 5.4, 10.4, 10.5_
+
+- [ ] 9. Implement order status update functionality
+  - Create update_order_status view to handle status transitions
+  - Verify restaurant ownership (order.restaurant matches request)
+  - Get new_status from POST request
+  - Validate status transition follows state machine (PENDING→CONFIRMED→PREPARING→OUT_FOR_DELIVERY→DELIVERED)
+  - Update order status to new_status
+  - Set appropriate timestamp field based on new status (confirmed_at, preparing_at, out_for_delivery_at, delivered_at)
+  - Prevent status updates for DELIVERED or CANCELLED orders
+  - Add success message with status update confirmation
+  - Redirect back to restaurant_orders dashboard
+  - Add URL pattern: path('restaurant/order/<int:order_id>/update-status/', views.update_order_status, name='update_order_status')
+  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 7.1, 7.2, 7.3, 7.4_
+
+- [ ] 10. Create admin orders dashboard with filtering
+  - Create admin_all_orders view for administrators
+  - Fetch all orders across all restaurants
+  - Implement status filtering (status query parameter)
+  - Implement date range filtering (from_date, to_date query parameters)
+  - Implement restaurant filtering (restaurant_id query parameter)
+  - Calculate summary statistics: total orders count, total revenue sum, average order value
+  - Use select_related and prefetch_related for optimization
+  - Create admin_all_orders.html template
+  - Display summary statistics at the top (total orders, revenue, average value)
+  - Add filter form with status dropdown, date range inputs, restaurant dropdown
+  - Display comprehensive orders table with columns: order_number, customer, restaurant, status, total_amount, created_at
+  - Group orders by restaurant with collapsible sections
+  - Add links to order details
+  - Add URL pattern: path('admin/orders/', views.admin_all_orders, name='admin_all_orders')
+  - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+
+- [ ] 11. Create admin analytics dashboard
+  - Create admin_analytics view to calculate and display analytics
+  - Calculate total orders count per restaurant
+  - Calculate total revenue per restaurant
+  - Calculate average order value per restaurant
+  - Calculate order counts by status (PENDING, CONFIRMED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELLED)
+  - Calculate daily order trends for last 30 days
+  - Calculate weekly order trends for last 12 weeks
+  - Calculate monthly order trends for last 12 months
+  - Pass all analytics data to template
+  - Create admin_analytics.html template
+  - Display restaurant performance table with orders count, revenue, average value
+  - Show order status distribution with visual indicators (progress bars or pie chart)
+  - Display order trends charts using Chart.js or similar library
+  - Add date range selector for custom analytics periods
+  - Style with Bootstrap 5 cards and responsive grid
+  - Add URL pattern: path('admin/analytics/', views.admin_analytics, name='admin_analytics')
+  - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
+
+- [ ] 12. Add navigation links and integrate with existing UI
+  - Update base.html template to add "My Orders" link in customer navbar
+  - Add "Order History" link in customer navbar dropdown
+  - Update admin_home.html to add "View All Orders" and "Analytics" links
+  - Update restaurant menu or dashboard to add "Manage Orders" link for restaurant owners
+  - Update checkout page to link to place_order view
+  - Ensure all new pages extend base.html or base_auth.html appropriately
+  - Add breadcrumb navigation for better UX
+  - Test all navigation flows between pages
+  - _Requirements: All requirements (navigation support)_
+
+- [ ] 13. Add database indexes for performance optimization
+  - Create migration to add database index on Order.order_number (unique index already exists)
+  - Add composite index on (customer_id, created_at) for order history queries
+  - Add composite index on (restaurant_id, status) for restaurant dashboard queries
+  - Add composite index on (status, created_at) for admin filtering
+  - Add index on Order.created_at for date range queries
+  - Run migration to apply indexes
+  - _Requirements: Performance optimization for 2.5, 5.5_
+
+- [ ]* 14. Write model unit tests
+  - Test Order.generate_order_number() creates unique order numbers in correct format
+  - Test Order.can_be_cancelled() returns True only for PENDING status
+  - Test Order.get_estimated_delivery_time() returns correct estimates for each status
+  - Test Order.get_total_preparation_time() calculates time correctly
+  - Test OrderItem price_at_order preserves historical pricing
+  - Test order status transitions follow state machine rules
+  - _Requirements: Testing strategy_
+
+- [ ]* 15. Write view integration tests
+  - Test place_order creates order and clears cart
+  - Test place_order handles empty cart error
+  - Test customer can only view their own orders
+  - Test order cancellation only works for PENDING orders
+  - Test restaurant owner can only update orders for their restaurant
+  - Test admin can view all orders
+  - Test filtering works correctly on order history and admin dashboard
+  - _Requirements: Testing strategy_

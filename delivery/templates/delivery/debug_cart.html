@@ -1,0 +1,29 @@
+{% extends 'delivery/base.html' %}
+{% block title %}Debug Cart Badge{% endblock %}
+{% block content %}
+<div style="padding: 2rem; background: white; color: black; margin: 2rem;">
+    <h1>Cart Badge Debug Info</h1>
+
+    <h2>User Info:</h2>
+    <p>Authenticated: {{ request.user.is_authenticated }}</p>
+    <p>Username: {{ request.user.username }}</p>
+
+    <h2>Cart Count:</h2>
+    <p>cart_count variable: <strong style="font-size: 2rem; color: red;">{{ cart_count }}</strong></p>
+    <p>Type: {{ cart_count|default:"None" }}</p>
+
+    <h2>Badge Test:</h2>
+    {% if cart_count > 0 %}
+    <p style="color: green;">✅ Badge SHOULD be visible (cart_count = {{ cart_count }})</p>
+    <div style="position: relative; display: inline-block; padding: 20px; background: #333;">
+        <span style="color: white;">🛒 Cart</span>
+        <span class="cart-badge">{{ cart_count }}</span>
+    </div>
+    {% else %}
+    <p style="color: orange;">⚠️ Badge will NOT show (cart_count = {{ cart_count }})</p>
+    {% endif %}
+
+    <h2>All Context Variables:</h2>
+    <pre>{{ request }}</pre>
+</div>
+{% endblock %}

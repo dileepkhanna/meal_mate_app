@@ -1,46 +1,103 @@
 {% extends 'delivery/base.html' %} {% block title %}Your Cart - Meal Mate{% endblock %} {% block content %}
 <div class="cart-container">
-    <h1><i class="fas fa-shopping-cart"></i> Your Cart</h1>
+    <div class="breadcrumb">
+        <a href="{% url 'show_restaurant_page' %}"><i class="fas fa-home"></i> Restaurants</a>
+        {% if cart_items %}
+        <span class="separator">›</span>
+        <a href="{% url 'customer_menu' cart_items.0.menu_item.restaurant.id username %}">
+            <i class="fas fa-utensils"></i> {{ cart_items.0.menu_item.restaurant.name }}
+        </a>
+        {% endif %}
+        <span class="separator">›</span>
+        <span class="current"><i class="fas fa-shopping-cart"></i> Cart</span>
+    </div>
+    
+    <div class="cart-header">
+        <h1><i class="fas fa-shopping-cart"></i> Your Cart</h1>
+        {% if cart_items %}
+        <div class="cart-header-actions">
+            <span class="cart-item-count">{{ item_count }} item{{ item_count|pluralize }}</span>
+            <form method="POST" action="{% url 'clear_cart' username %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to clear your entire cart?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i> Clear Cart
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
 
-    {% if items %}
+    {% if cart_items %}
     <div class="cart-items">
-        {% for item in items %}
-        <div class="cart-item">
-            <img src="{{ item.picture }}" alt="{{ item.name }}" class="cart-item-image">
+        {% for cart_item in cart_items %}
+        <div class="cart-item" id="cart-item-{{ forloop.counter0 }}">
+            <img src="{{ cart_item.menu_item.picture }}" alt="{{ cart_item.menu_item.name }}" class="cart-item-image">
             <div class="cart-item-details">
-                <h3 class="cart-item-name">{{ item.name }}</h3>
-                <p class="cart-item-desc">{{ item.description }}</p>
-                <p class="cart-item-price">₹<span class="price">{{ item.price }}</span></p>
+                <h3 class="cart-item-name">{{ cart_item.menu_item.name }}</h3>
+                <p class="cart-item-desc">{{ cart_item.menu_item.description }}</p>
+                <div class="cart-item-meta">
+                    <span class="cart-item-restaurant">{{ cart_item.menu_item.restaurant.name }}</span>
+                    {% if cart_item.menu_item.is_veg %}
+                        <span class="veg-indicator"><i class="fas fa-leaf"></i> Veg</span>
+                    {% else %}
+                        <span class="non-veg-indicator"><i class="fas fa-drumstick-bite"></i> Non-Veg</span>
+                    {% endif %}
+                </div>
+                <p class="cart-item-price">₹<span class="price">{{ cart_item.menu_item.price }}</span></p>
             </div>
-            <div class="cart-quantity">
-                <button class="inc-dec-btn" type="button" onclick="changeQty('{{ forloop.counter0 }}', -1)">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <input type="number" id="qty-{{ forloop.counter0 }}" value="1" min="1" onchange="updateRow('{{ forloop.counter0 }}')">
-                <button class="inc-dec-btn" type="button" onclick="changeQty('{{ forloop.counter0 }}', 1)">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-            <div class="cart-row-total">
-                <strong>₹<span id="row-total-{{ forloop.counter0 }}">{{ item.price }}</span></strong>
+            <div class="cart-item-actions">
+                <div class="cart-quantity">
+                    <button class="inc-dec-btn" type="button" onclick="changeQty('{{ forloop.counter0 }}', -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" id="qty-{{ forloop.counter0 }}" value="{{ cart_item.quantity }}" min="1" max="10" onchange="updateRow('{{ forloop.counter0 }}')">
+                    <button class="inc-dec-btn" type="button" onclick="changeQty('{{ forloop.counter0 }}', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="cart-row-total">
+                    <strong>₹<span id="row-total-{{ forloop.counter0 }}">{{ cart_item.get_total_price }}</span></strong>
+                </div>
+                <div class="cart-item-remove">
+                    <form method="POST" action="{% url 'remove_from_cart' cart_item.menu_item.id username %}" style="display: inline;" onsubmit="return confirm('Remove {{ cart_item.menu_item.name }} from cart?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" title="Remove item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <div class="cart-footer">
-        <div class="cart-grand-total">
-            Total: ₹<span id="grand-total">{{ total_price }}</span>
+    <div class="cart-summary">
+        <div class="cart-summary-details">
+            <div class="summary-row">
+                <span>Subtotal ({{ item_count }} item{{ item_count|pluralize }}):</span>
+                <span>₹<span id="subtotal">{{ total_price }}</span></span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery Fee:</span>
+                <span class="delivery-fee">₹30</span>
+            </div>
+            <div class="summary-row total-row">
+                <strong>Total: ₹<span id="grand-total">{{ total_price|add:30 }}</span></strong>
+            </div>
         </div>
+        
         <div class="cart-actions">
             <form method="POST" action="{% url 'checkout' username %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary ">
                     <i class="fas fa-credit-card"></i> Proceed to Checkout
                 </button>
             </form>
-            <a href="{% if items %}{% url 'customer_menu' items.0.restaurant.id username %}{% else %}/{% endif %}">
-                <button class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Continue Shopping</button>
+            <a href="{% if cart_items %}{% url 'customer_menu' cart_items.0.menu_item.restaurant.id username %}{% else %}{% url 'show_restaurant_page' %}{% endif %}">
+                <button class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Menu</button>
+            </a>
+            <a href="{% url 'show_restaurant_page' %}">
+                <button class="btn btn-secondary"><i class="fas fa-store"></i> Browse Restaurants</button>
             </a>
         </div>
     </div>
@@ -57,11 +114,13 @@
     {% endif %}
 </div>
 
+{% block scripts %}
 <script>
     function changeQty(index, delta) {
         const qtyInput = document.getElementById("qty-" + index);
         let value = parseInt(qtyInput.value) + delta;
         if (value < 1) value = 1;
+        if (value > 10) value = 10; // Maximum quantity limit
         qtyInput.value = value;
         updateRow(index);
     }
@@ -71,14 +130,56 @@
         const qty = parseInt(document.getElementById("qty-" + index).value);
         const rowTotal = price * qty;
         document.getElementById("row-total-" + index).innerText = rowTotal.toFixed(2);
-        updateGrandTotal();
+        updateTotals();
     }
 
-    function updateGrandTotal() {
+    function updateTotals() {
         let totals = document.querySelectorAll("[id^='row-total-']");
-        let sum = 0;
-        totals.forEach(el => sum += parseFloat(el.innerText));
-        document.getElementById("grand-total").innerText = sum.toFixed(2);
+        let subtotal = 0;
+        totals.forEach(el => subtotal += parseFloat(el.innerText));
+        
+        const deliveryFee = 30;
+        const grandTotal = subtotal + deliveryFee;
+        
+        document.getElementById("subtotal").innerText = subtotal.toFixed(2);
+        document.getElementById("grand-total").innerText = grandTotal.toFixed(2);
     }
+
+    function removeItem(index) {
+        const cartItem = document.getElementById("cart-item-" + index);
+        if (cartItem) {
+            cartItem.style.opacity = '0.5';
+            cartItem.style.pointerEvents = 'none';
+        }
+    }
+
+    // Add smooth animations for better UX
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add fade-in animation to cart items
+        const cartItems = document.querySelectorAll('.cart-item');
+        cartItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                item.style.transition = 'all 0.3s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // Update totals on page load
+        updateTotals();
+    });
+
+    // Add confirmation for remove buttons
+    document.querySelectorAll('.cart-item-remove form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const itemName = this.closest('.cart-item').querySelector('.cart-item-name').textContent;
+            if (!confirm(`Remove ${itemName} from cart?`)) {
+                e.preventDefault();
+            }
+        });
+    });
 </script>
+{% endblock %}
 {% endblock %}

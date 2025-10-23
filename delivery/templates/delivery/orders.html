@@ -3,50 +3,67 @@
 {% block title %}Order Confirmed - Meal Mate{% endblock %}
 
 {% block content %}
-<div class="fade-in-up" style="text-align: center;">
-    <div class="card" style="max-width: 600px; margin: 2rem auto;">
-        <i class="fas fa-check-circle" style="font-size: 4rem; color: #4caf50; margin-bottom: 1rem;"></i>
-        <h1 style="color: #333; margin-bottom: 1rem;">Order Confirmed!</h1>
-        <p style="color: #666; font-size: 1.2rem; margin-bottom: 2rem;">
-            Thank you for your order, <strong>{{ username }}</strong>!
-        </p>
-        
+<div class="order-confirmation-container">
+    <div class="order-confirmation-card">
+        <!-- Success Icon -->
+        <div class="success-icon-wrapper">
+            <i class="fas fa-check-circle success-icon"></i>
+        </div>
+
+        <!-- Header -->
+        <div class="order-header">
+            <h1 class="order-title">Order Confirmed!</h1>
+            <p class="order-subtitle">Thank you for your order, <strong>{{ username }}</strong>!</p>
+        </div>
+
+        <!-- Order Details -->
         {% if cart_items %}
-            <div style="text-align: left; margin: 2rem 0;">
-                <h3 style="color: #333; margin-bottom: 1rem;">Order Details:</h3>
-                {% for item in cart_items %}
-                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                        <span>{{ item.name }}</span>
-                        <span style="font-weight: bold;">₹{{ item.price }}</span>
+        <div class="order-details-section">
+            <h3 class="section-title">
+                <i class="fas fa-receipt"></i> Order Details
+            </h3>
+            <div class="order-items-list">
+                {% for cart_item in cart_items %}
+                <div class="order-item">
+                    <div class="item-info">
+                        <span class="item-name">{{ cart_item.menu_item.name }}</span>
+                        <span class="item-quantity">x{{ cart_item.quantity }}</span>
                     </div>
+                    <span class="item-price">₹{{ cart_item.get_total_price }}</span>
+                </div>
                 {% endfor %}
-                <div style="display: flex; justify-content: space-between; padding: 1rem 0; font-weight: bold; font-size: 1.2rem; color: #667eea;">
-                    <span>Total:</span>
-                    <span>₹{{ total_price }}</span>
+                
+                <div class="order-total">
+                    <span class="total-label">Total Amount</span>
+                    <span class="total-amount">₹{{ total_price }}</span>
                 </div>
             </div>
+        </div>
         {% endif %}
-        
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-            <h3 style="color: #333; margin-bottom: 1rem;">
+
+        <!-- Delivery Address -->
+        <div class="delivery-address-section">
+            <h3 class="section-title">
                 <i class="fas fa-map-marker-alt"></i> Delivery Address
             </h3>
-            <p style="color: #666;">{{ customer.address }}</p>
+            <p class="address-text">{{ customer.address }}</p>
         </div>
-        
-        <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-            <i class="fas fa-truck" style="color: #4caf50; margin-right: 0.5rem;"></i>
-            <strong style="color: #4caf50;">Your order will be delivered in 30-45 minutes!</strong>
+
+        <!-- Delivery Time Info -->
+        <div class="delivery-time-section">
+            <i class="fas fa-truck delivery-truck-icon"></i>
+            <strong class="delivery-time-text">Your order will be delivered in 30-45 minutes!</strong>
         </div>
-        
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/" class="btn btn-primary">
-                <i class="fas fa-store"></i> Browse More Restaurants
+
+        <!-- Action Buttons -->
+        <div class="order-actions">
+            <a href="{% url 'customer_home' username %}" class="btn-order-action btn-primary-action">
+                <i class="fas fa-home"></i> Back to Home
             </a>
             {% if cart_items %}
-                <a href="{% url 'customer_menu' cart_items.0.restaurant.id username %}" class="btn btn-secondary">
-                    <i class="fas fa-redo"></i> Order Again
-                </a>
+            <a href="{% url 'customer_menu' cart_items.0.menu_item.restaurant.id username %}" class="btn-order-action btn-secondary-action">
+                <i class="fas fa-redo"></i> Order Again
+            </a>
             {% endif %}
         </div>
     </div>

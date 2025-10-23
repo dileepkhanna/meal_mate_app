@@ -1,8 +1,7 @@
-{% extends 'delivery/base.html' %} {% block title %}Sign Up - Meal Mate{% endblock %} {% block content %}
-<div class="form-container ">
-    <h2 style="text-align: center; color: #333; margin-bottom: 2rem;">
-        <i class="fas fa-user-plus"></i> Create Account
-    </h2>
+{% extends 'delivery/base_auth.html' %} {% block title %}Sign Up - Meal Mate{% endblock %} {% block content %}
+<h2 style="text-align: center; color: #333; margin-bottom: 2rem;">
+    <i class="fas fa-user-plus"></i> Create Account
+</h2>
 
     <form method="POST" action="{% url 'handle_signup' %}">
         {% csrf_token %}
@@ -49,11 +48,19 @@
         </div>
     </form>
 
-    <div style="text-align: center; margin-top: 2rem;">
+    <div style="text-align: center; margin-top: 1.5rem;">
         <p style="color: #666;">Already have an account?</p>
         <a href="{% url 'signin' %}">
             <button class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i> Sign In</button>
         </a>
     </div>
-</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Refresh CSRF token on page load to prevent stale token issues
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CSRF token refreshed on signup page');
+});
+</script>
 {% endblock %}

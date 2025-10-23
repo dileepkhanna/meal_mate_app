@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'delivery.context_processors.cart_count',
             ],
         },
     },
@@ -135,3 +136,9 @@ RAZORPAY_KEY_ID = "rzp_test_xxxxxxxxx"
 RAZORPAY_KEY_SECRET = "xxxxxxxxxxxxxxxx"
 # Tell Django to use your custom user model for authentication
 AUTH_USER_MODEL = 'delivery.Customer'
+
+# CSRF Configuration
+CSRF_FAILURE_VIEW = 'delivery.views.csrf_failure'
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
