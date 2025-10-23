@@ -142,6 +142,9 @@ CSRF_FAILURE_VIEW = 'delivery.views.csrf_failure'
 CSRF_COOKIE_SECURE = not DEBUG  # True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_AGE = 31449600  # 1 year
+CSRF_USE_SESSIONS = False  # Use cookies instead of sessions
+CSRF_COOKIE_NAME = 'csrftoken'
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if os.environ.get('CSRF_TRUSTED_ORIGINS') else []
 
 # Security settings for production

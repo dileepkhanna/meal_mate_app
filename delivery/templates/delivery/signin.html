@@ -1,55 +1,82 @@
-{% extends 'delivery/base_auth.html' %} {% block title %}Sign In - Meal Mate{% endblock %} {% block content %}
+{% extends 'delivery/base_auth.html' %}
+{% block title %}Sign In - Meal Mate{% endblock %}
+
+{% block content %}
 <h2 style="text-align: center; color: #333; margin-bottom: 2rem;">
     <i class="fas fa-sign-in-alt"></i> Sign In
 </h2>
 
-    <form method="POST" action="{% url 'handle_login' %}">
-        {% csrf_token %}
+<form method="POST" action="{% url 'handle_login' %}" id="signinForm">
+    {% csrf_token %}
 
-        <div class="form-group">
-            <label for="username">
-                <i class="fas fa-user"></i> Username
-            </label>
-            <input type="text" id="username" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">
-                <i class="fas fa-lock"></i> Password
-            </label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Sign In
-            </button>
-        </div>
-    </form>
-
-    <div style="text-align: center; margin-top: 1.5rem;">
-        <p style="color: #666;">Don't have an account?</p>
-        <a href="{% url 'signup' %}">
-            <button class="btn btn-secondary"><i class="fas fa-user-plus"></i> Sign Up</button>
-        </a>
+    <div class="form-group">
+        <label for="username">
+            <i class="fas fa-user"></i> Username
+        </label>
+        <input type="text" id="username" name="username" required autocomplete="username">
     </div>
+
+    <div class="form-group">
+        <label for="password">
+            <i class="fas fa-lock"></i> Password
+        </label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+    </div>
+</form>
+
+<div style="text-align: center; margin-top: 1.5rem;">
+    <p style="color: #666;">Don't have an account?</p>
+    <a href="{% url 'signup' %}">
+        <button class="btn btn-secondary">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+    </a>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Refresh CSRF token on page load to prevent stale token issues
 document.addEventListener('DOMContentLoaded', function() {
-    // Get fresh CSRF token
-    fetch('{% url "signin" %}', {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
+    const form = document.getElementById('signinForm');
+    
+    // Get CSRF token from cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-    }).then(response => {
-        // Token is automatically refreshed by visiting the page
-        console.log('CSRF token refreshed');
-    }).catch(error => {
-        console.log('CSRF refresh failed:', error);
+        return cookieValue;
+    }
+    
+    // Verify CSRF token exists before form submission
+    form.addEventListener('submit', function(e) {
+        const csrfToken = getCookie('csrftoken');
+        const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        
+        if (!csrfToken || !csrfInput || !csrfInput.value) {
+            e.preventDefault();
+            alert('Security token missing. Please refresh the page and try again.');
+            window.location.reload();
+            return false;
+        }
+        
+        // Update CSRF token in form if cookie value is different
+        if (csrfInput.value !== csrfToken) {
+            csrfInput.value = csrfToken;
+        }
     });
 });
 </script>

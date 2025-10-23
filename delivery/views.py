@@ -10,8 +10,19 @@ from django.conf import settings
 
 # CSRF Failure Handler
 def csrf_failure(request, reason=""):
-    messages.error(request, 'Security token expired. Please try again.')
-    return redirect('signin')
+    # Get the referer to redirect back to the appropriate page
+    referer = request.META.get('HTTP_REFERER', '')
+    
+    # Determine which page to redirect to
+    if 'signup' in referer:
+        redirect_page = 'signup'
+        page_name = 'sign up'
+    else:
+        redirect_page = 'signin'
+        page_name = 'sign in'
+    
+    messages.error(request, f'Security token expired. Please refresh and try to {page_name} again.')
+    return redirect(redirect_page)
 
 # Home Page
 def index(request):

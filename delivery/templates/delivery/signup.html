@@ -1,66 +1,104 @@
-{% extends 'delivery/base_auth.html' %} {% block title %}Sign Up - Meal Mate{% endblock %} {% block content %}
+{% extends 'delivery/base_auth.html' %}
+{% block title %}Sign Up - Meal Mate{% endblock %}
+
+{% block content %}
 <h2 style="text-align: center; color: #333; margin-bottom: 2rem;">
     <i class="fas fa-user-plus"></i> Create Account
 </h2>
 
-    <form method="POST" action="{% url 'handle_signup' %}">
-        {% csrf_token %}
+<form method="POST" action="{% url 'handle_signup' %}" id="signupForm">
+    {% csrf_token %}
 
-        <div class="form-group">
-            <label for="username">
-                <i class="fas fa-user"></i> Username
-            </label>
-            <input type="text" id="username" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">
-                <i class="fas fa-lock"></i> Password
-            </label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <div class="form-group">
-            <label for="email">
-                <i class="fas fa-envelope"></i> Email
-            </label>
-            <input type="email" id="email" name="email" required>
-        </div>
-
-        <div class="form-group">
-            <label for="mobile">
-                <i class="fas fa-phone"></i> Mobile Number
-            </label>
-            <input type="text" id="mobile" name="mobile" required>
-        </div>
-
-        <div class="form-group">
-            <label for="address">
-                <i class="fas fa-map-marker-alt"></i> Address
-            </label>
-            <textarea id="address" name="address" required></textarea>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-user-plus"></i> Create Account
-            </button>
-        </div>
-    </form>
-
-    <div style="text-align: center; margin-top: 1.5rem;">
-        <p style="color: #666;">Already have an account?</p>
-        <a href="{% url 'signin' %}">
-            <button class="btn btn-secondary"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-        </a>
+    <div class="form-group">
+        <label for="username">
+            <i class="fas fa-user"></i> Username
+        </label>
+        <input type="text" id="username" name="username" required autocomplete="username">
     </div>
+
+    <div class="form-group">
+        <label for="password">
+            <i class="fas fa-lock"></i> Password
+        </label>
+        <input type="password" id="password" name="password" required autocomplete="new-password">
+    </div>
+
+    <div class="form-group">
+        <label for="email">
+            <i class="fas fa-envelope"></i> Email
+        </label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+    </div>
+
+    <div class="form-group">
+        <label for="mobile">
+            <i class="fas fa-phone"></i> Mobile Number
+        </label>
+        <input type="tel" id="mobile" name="mobile" required autocomplete="tel">
+    </div>
+
+    <div class="form-group">
+        <label for="address">
+            <i class="fas fa-map-marker-alt"></i> Address
+        </label>
+        <textarea id="address" name="address" rows="3" required autocomplete="street-address"></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Create Account
+        </button>
+    </div>
+</form>
+
+<div style="text-align: center; margin-top: 1.5rem;">
+    <p style="color: #666;">Already have an account?</p>
+    <a href="{% url 'signin' %}">
+        <button class="btn btn-secondary">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+    </a>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// Refresh CSRF token on page load to prevent stale token issues
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('CSRF token refreshed on signup page');
+    const form = document.getElementById('signupForm');
+    
+    // Get CSRF token from cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Verify CSRF token exists before form submission
+    form.addEventListener('submit', function(e) {
+        const csrfToken = getCookie('csrftoken');
+        const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        
+        if (!csrfToken || !csrfInput || !csrfInput.value) {
+            e.preventDefault();
+            alert('Security token missing. Please refresh the page and try again.');
+            window.location.reload();
+            return false;
+        }
+        
+        // Update CSRF token in form if cookie value is different
+        if (csrfInput.value !== csrfToken) {
+            csrfInput.value = csrfToken;
+        }
+    });
 });
 </script>
 {% endblock %}
