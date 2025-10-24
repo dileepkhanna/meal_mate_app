@@ -28,10 +28,12 @@
                 <td>{{ item.price }}</td>
                 <td>{% if item.is_veg %}Veg{% else %}Non-Veg{% endif %}</td>
                 <td>
-                    <a href="{% url 'update_menuItem_page' item.id %}"><button class="btn btn-secondary update-menu-btn">Update</button></a>
+                    <a href="{% url 'update_menuItem_page' item.id %}"><button
+                            class="btn btn-secondary update-menu-btn">Update</button></a>
                     <form method="POST" action="{% url 'delete_menuItem' item.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                        <button type="submit" class="btn btn-primary"
+                            onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
                     </form>
                 </td>
             </tr>

@@ -14,100 +14,100 @@
         </div>
 
         {% if error %}
-            <!-- Error State -->
-            <div class="checkout-error-card">
-                <div class="error-icon-wrapper">
-                    <i class="fas fa-exclamation-triangle error-icon"></i>
-                </div>
-                <h3 class="error-title">{{ error }}</h3>
-                <p class="error-message">Please add items to your cart before proceeding to checkout.</p>
-                <a href="{% url 'customer_home' username %}" class="btn-checkout-action btn-primary-checkout">
-                    <i class="fas fa-home"></i> Back to Home
-                </a>
+        <!-- Error State -->
+        <div class="checkout-error-card">
+            <div class="error-icon-wrapper">
+                <i class="fas fa-exclamation-triangle error-icon"></i>
             </div>
+            <h3 class="error-title">{{ error }}</h3>
+            <p class="error-message">Please add items to your cart before proceeding to checkout.</p>
+            <a href="{% url 'customer_home' username %}" class="btn-checkout-action btn-primary-checkout">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
         {% else %}
-            <!-- Single Centered Checkout Card -->
-            <div class="checkout-single-card">
-                <!-- Order Summary Section -->
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-receipt"></i> Order Summary
-                    </h2>
-                </div>
+        <!-- Single Centered Checkout Card -->
+        <div class="checkout-single-card">
+            <!-- Order Summary Section -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-receipt"></i> Order Summary
+                </h2>
+            </div>
 
-                <div class="order-items-container">
-                    {% for cart_item in cart_items %}
-                    <div class="checkout-order-item">
-                        <div class="item-left">
-                            <div class="item-name-row">
-                                <span class="item-name">{{ cart_item.menu_item.name }}</span>
-                                <span class="item-qty-badge">×{{ cart_item.quantity }}</span>
-                            </div>
-                            <p class="item-description">{{ cart_item.menu_item.description }}</p>
+            <div class="order-items-container">
+                {% for cart_item in cart_items %}
+                <div class="checkout-order-item">
+                    <div class="item-left">
+                        <div class="item-name-row">
+                            <span class="item-name">{{ cart_item.menu_item.name }}</span>
+                            <span class="item-qty-badge">×{{ cart_item.quantity }}</span>
                         </div>
-                        <div class="item-right">
-                            <span class="item-price">₹{{ cart_item.get_total_price }}</span>
+                        <p class="item-description">{{ cart_item.menu_item.description }}</p>
+                    </div>
+                    <div class="item-right">
+                        <span class="item-price">₹{{ cart_item.get_total_price }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-summary-footer">
+                <div class="summary-row subtotal-row">
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value">₹{{ total_price }}</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span class="summary-label">Total Amount</span>
+                    <span class="summary-value total-amount">₹{{ total_price }}</span>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="payment-divider"></div>
+
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-wallet"></i> Payment Method
+                </h2>
+            </div>
+
+            <div class="payment-body">
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Payment</span>
+                </div>
+
+                <button id="rzp-button" class="btn-pay-now">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Pay ₹{{ total_price }}</span>
+                </button>
+
+                <p class="payment-note">Powered by Razorpay</p>
+
+                <div class="payment-methods-section">
+                    <p class="methods-title">We Accept</p>
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-item">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Cards</span>
                         </div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div class="order-summary-footer">
-                    <div class="summary-row subtotal-row">
-                        <span class="summary-label">Subtotal</span>
-                        <span class="summary-value">₹{{ total_price }}</span>
-                    </div>
-                    <div class="summary-row total-row">
-                        <span class="summary-label">Total Amount</span>
-                        <span class="summary-value total-amount">₹{{ total_price }}</span>
-                    </div>
-                </div>
-
-                <!-- Payment Section -->
-                <div class="payment-divider"></div>
-                
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-wallet"></i> Payment Method
-                    </h2>
-                </div>
-
-                <div class="payment-body">
-                    <div class="security-badge">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Secure Payment</span>
-                    </div>
-
-                    <button id="rzp-button" class="btn-pay-now">
-                        <i class="fas fa-credit-card"></i>
-                        <span>Pay ₹{{ total_price }}</span>
-                    </button>
-
-                    <p class="payment-note">Powered by Razorpay</p>
-
-                    <div class="payment-methods-section">
-                        <p class="methods-title">We Accept</p>
-                        <div class="payment-methods-grid">
-                            <div class="payment-method-item">
-                                <i class="fas fa-credit-card"></i>
-                                <span>Cards</span>
-                            </div>
-                            <div class="payment-method-item">
-                                <i class="fas fa-mobile-alt"></i>
-                                <span>UPI</span>
-                            </div>
-                            <div class="payment-method-item">
-                                <i class="fas fa-university"></i>
-                                <span>Banking</span>
-                            </div>
-                            <div class="payment-method-item">
-                                <i class="fas fa-wallet"></i>
-                                <span>Wallet</span>
-                            </div>
+                        <div class="payment-method-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>UPI</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <i class="fas fa-university"></i>
+                            <span>Banking</span>
+                        </div>
+                        <div class="payment-method-item">
+                            <i class="fas fa-wallet"></i>
+                            <span>Wallet</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         {% endif %}
     </div>
 </div>
