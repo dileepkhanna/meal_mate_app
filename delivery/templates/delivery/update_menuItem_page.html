@@ -1,4 +1,4 @@
-{% extends 'delivery/base.html' %} {% block title %}Update Menu Item - Meal Mate{% endblock %} {% block content %}
+{% extends 'delivery/base_admin.html' %}{% block title %}Update Menu Item - Meal Mate{% endblock %} {% block content %}
 <div class="update-item-container">
     <h2>Update Menu Item</h2>
     <form method="POST" action="{% url 'update_menuItem' item.id %}" class="update-form">

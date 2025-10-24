@@ -6,7 +6,7 @@
     <i class="fas fa-sign-in-alt"></i> Sign In
 </h2>
 
-<form method="POST" action="{% url 'handle_login' %}" id="signinForm">
+<form method="POST" action="{% url 'signin' %}" id="signinForm">
     {% csrf_token %}
 
     <div class="form-group">

@@ -6,7 +6,7 @@
     <i class="fas fa-user-plus"></i> Create Account
 </h2>
 
-<form method="POST" action="{% url 'handle_signup' %}" id="signupForm">
+<form method="POST" action="{% url 'signup' %}" id="signupForm">
     {% csrf_token %}
 
     <div class="form-group">

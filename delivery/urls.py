@@ -9,7 +9,14 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.handle_login, name='handle_login'),
     path('signup/submit/', views.handle_signup, name='handle_signup'),
-    path('admin/home/', views.admin_home, name='admin_home'),
+    
+    # Admin authentication paths
+    path('ws-admin/signin/', views.admin_signin, name='admin_signin'),
+    path('ws-admin1/signup/', views.admin_signup, name='admin_signup'),
+    path('ws-admin1/login/', views.handle_admin_login, name='handle_admin_login'),
+    path('ws-admin1/signup/submit/', views.handle_admin_signup, name='handle_admin_signup'),
+    
+    path('ws-admin1/home/', views.admin_home, name='admin_home'),
     path('customer/<str:username>/home/', views.customer_home, name='customer_home'),
 
     # Restaurant-related paths

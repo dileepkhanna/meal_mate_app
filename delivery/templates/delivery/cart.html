@@ -96,7 +96,7 @@
             <a href="{% if cart_items %}{% url 'customer_menu' cart_items.0.menu_item.restaurant.id username %}{% else %}{% url 'show_restaurant_page' %}{% endif %}">
                 <button class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Menu</button>
             </a>
-            <a href="{% url 'show_restaurant_page' %}">
+            <a href="{% url 'customer_home' request.user.username %}">
                 <button class="btn btn-secondary"><i class="fas fa-store"></i> Browse Restaurants</button>
             </a>
         </div>

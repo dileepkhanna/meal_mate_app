@@ -28,19 +28,27 @@ def csrf_failure(request, reason=""):
 def index(request):
     return render(request, 'delivery/index.html')
 
-# Sign In Page
+# Sign In Page (handles both GET and POST)
 def signin(request):
-    # Ensure fresh CSRF token
-    get_token(request)
-    return render(request, 'delivery/signin.html')
+    if request.method == 'POST':
+        # Handle signin submission
+        return handle_login(request)
+    else:
+        # Show signin form
+        get_token(request)
+        return render(request, 'delivery/signin.html')
 
-# Sign Up Page
+# Sign Up Page (handles both GET and POST)
 def signup(request):
-    # Ensure fresh CSRF token
-    get_token(request)
-    return render(request, 'delivery/signup.html')
+    if request.method == 'POST':
+        # Handle signup submission
+        return handle_signup(request)
+    else:
+        # Show signup form
+        get_token(request)
+        return render(request, 'delivery/signup.html')
 
-# Handle Login
+# Handle Customer Login
 def handle_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -48,19 +56,52 @@ def handle_login(request):
 
         from django.contrib.auth import authenticate, login
         
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            if username == 'admin':
-                return redirect('admin_home')
+        # Try to authenticate as Customer
+        try:
+            customer = Customer.objects.get(username=username)
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None and isinstance(user, Customer):
+                # Check if user is not staff (regular customer)
+                if not user.is_staff and not user.is_superuser:
+                    login(request, user)
+                    return redirect('customer_home', username=username)
+                else:
+                    messages.error(request, 'Please use admin login for admin accounts.')
+                    return redirect('signin')
             else:
-                return redirect('customer_home', username=username)
-        else:
+                messages.error(request, 'Invalid username or password.')
+                return redirect('signin')
+        except Customer.DoesNotExist:
             messages.error(request, 'Invalid username or password.')
             return redirect('signin')
     else:
-        # Handle GET requests by redirecting to signin page
         return redirect('signin')
+
+# Handle Admin Login
+def handle_admin_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        from django.contrib.auth import authenticate, login
+        
+        # Authenticate user
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Check if user is staff or superuser (admin)
+            if user.is_staff or user.is_superuser:
+                login(request, user)
+                return redirect('admin_home')
+            else:
+                messages.error(request, 'Access denied. Admin credentials required.')
+                return redirect('admin_signin')
+        else:
+            messages.error(request, 'Invalid admin username or password.')
+            return redirect('admin_signin')
+    else:
+        return redirect('admin_signin')
 
 # Admin Home Page
 def admin_home(request):
@@ -92,19 +133,87 @@ def handle_signup(request):
             messages.error(request, 'Email already registered. Please use a different email.')
             return redirect('signup')
 
-        # Create user with hashed password
+        # Create customer user with hashed password (not staff)
         customer = Customer.objects.create_user(
             username=username,
             password=password,
             email=email,
             mobile=mobile,
-            address=address
+            address=address,
+            is_staff=False,  # Ensure customer is not staff
+            is_superuser=False  # Ensure customer is not superuser
         )
         messages.success(request, 'Account created successfully! Please sign in.')
         return redirect('signin')
     else:
         # Handle GET requests by redirecting to signup page
         return redirect('signup')
+
+# Admin Sign In Page (handles both GET and POST)
+def admin_signin(request):
+    if request.method == 'POST':
+        # Handle admin signin submission
+        return handle_admin_login(request)
+    else:
+        # Show admin signin form
+        get_token(request)
+        return render(request, 'delivery/admin_signin.html')
+
+# Admin Sign Up Page (handles both GET and POST)
+def admin_signup(request):
+    if request.method == 'POST':
+        # Handle admin signup submission
+        return handle_admin_signup(request)
+    else:
+        # Show admin signup form
+        get_token(request)
+        return render(request, 'delivery/admin_signup.html')
+
+# Handle Admin Sign Up
+def handle_admin_signup(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        email = request.POST.get('email')
+        admin_code = request.POST.get('admin_code')
+
+        # Verify admin access code (you should change this to a secure code)
+        ADMIN_ACCESS_CODE = "1425"  # Change this to your secure code
+        
+        if admin_code != ADMIN_ACCESS_CODE:
+            messages.error(request, 'Invalid admin access code. Contact system administrator.')
+            return redirect('admin_signup')
+
+        # Check if passwords match
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('admin_signup')
+
+        # Check for duplicate username in Customer model
+        if Customer.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists. Please choose a different username.')
+            return redirect('admin_signup')
+        
+        if Customer.objects.filter(email=email).exists():
+            messages.error(request, 'Email already registered. Please use a different email.')
+            return redirect('admin_signup')
+
+        # Create admin user using Customer model with staff privileges
+        admin_user = Customer.objects.create_user(
+            username=username,
+            password=password,
+            email=email,
+            mobile='',  # Admin doesn't need mobile
+            address='',  # Admin doesn't need address
+            is_staff=True,  # Make them staff (admin)
+            is_superuser=False  # Not superuser by default
+        )
+        
+        messages.success(request, 'Admin account created successfully! Please sign in.')
+        return redirect('admin_signin')
+    else:
+        return redirect('admin_signup')
 
 # Add Restaurant Page
 def add_restaurant_page(request):
