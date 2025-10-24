@@ -145,7 +145,13 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_AGE = 31449600  # 1 year
 CSRF_USE_SESSIONS = False  # Use cookies instead of sessions
 CSRF_COOKIE_NAME = 'csrftoken'
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if os.environ.get('CSRF_TRUSTED_ORIGINS') else []
+
+# CSRF Trusted Origins - properly handle environment variable
+csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if csrf_origins:
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_origins.split(',') if origin.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = []
 
 # Security settings for production
 if not DEBUG:
