@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Admin Sign Up - Meal Mate</title>
 </head>
+
 <body>
     <div class="auth-page admin-auth">
         <div class="auth-container">
@@ -32,13 +34,14 @@
 
             <form method="POST" action="{% url 'admin_signup' %}" class="auth-form">
                 {% csrf_token %}
-                
+
                 <div class="form-group">
                     <label for="username">
                         <i class="fas fa-user"></i> Admin Username
                         <span class="required">*</span>
                     </label>
-                    <input type="text" id="username" name="username" required placeholder="Choose admin username" autofocus>
+                    <input type="text" id="username" name="username" required placeholder="Choose admin username"
+                        autofocus>
                 </div>
 
                 <div class="form-group">
@@ -54,7 +57,32 @@
                         <i class="fas fa-lock"></i> Password
                         <span class="required">*</span>
                     </label>
-                    <input type="password" id="password" name="password" required placeholder="Create strong password">
+                    <div style="position: relative;">
+                        <input type="password" id="password" name="password" required
+                            placeholder="Create strong password" style="padding-right: 45px;" minlength="8">
+                        <button type="button" onclick="togglePassword('password', 'togglePasswordIcon')"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--champagne-gold); font-size: 1.2rem;">
+                            <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                        </button>
+                    </div>
+                    <div id="passwordStrength" style="margin-top: 0.5rem; display: none;">
+                        <div style="display: flex; gap: 0.25rem; margin-bottom: 0.5rem;">
+                            <div id="strength-bar"
+                                style="height: 4px; flex: 1; background: #e0e0e0; border-radius: 2px; transition: all 0.3s;">
+                            </div>
+                        </div>
+                        <small id="strength-text" style="font-size: 0.85rem;"></small>
+                    </div>
+                    <small class="form-hint" style="display: block; margin-top: 0.5rem;">
+                        Password must contain:
+                        <ul style="margin: 0.25rem 0 0 1.5rem; padding: 0; list-style: none; font-size: 0.85rem;">
+                            <li id="req-length"><span class="req-icon">○</span> At least 8 characters</li>
+                            <li id="req-uppercase"><span class="req-icon">○</span> One uppercase letter (A-Z)</li>
+                            <li id="req-lowercase"><span class="req-icon">○</span> One lowercase letter (a-z)</li>
+                            <li id="req-number"><span class="req-icon">○</span> One number (0-9)</li>
+                            <li id="req-special"><span class="req-icon">○</span> One special character (@$!%*?&)</li>
+                        </ul>
+                    </small>
                 </div>
 
                 <div class="form-group">
@@ -62,7 +90,14 @@
                         <i class="fas fa-lock"></i> Confirm Password
                         <span class="required">*</span>
                     </label>
-                    <input type="password" id="confirm_password" name="confirm_password" required placeholder="Re-enter password">
+                    <div style="position: relative;">
+                        <input type="password" id="confirm_password" name="confirm_password" required
+                            placeholder="Re-enter password" style="padding-right: 45px;">
+                        <button type="button" onclick="togglePassword('confirm_password', 'toggleConfirmPasswordIcon')"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--champagne-gold); font-size: 1.2rem;">
+                            <i class="fas fa-eye" id="toggleConfirmPasswordIcon"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -70,7 +105,14 @@
                         <i class="fas fa-key"></i> Admin Access Code
                         <span class="required">*</span>
                     </label>
-                    <input type="password" id="admin_code" name="admin_code" required placeholder="Enter admin access code">
+                    <div style="position: relative;">
+                        <input type="password" id="admin_code" name="admin_code" required
+                            placeholder="Enter admin access code" style="padding-right: 45px;">
+                        <button type="button" onclick="togglePassword('admin_code', 'toggleAdminCodeIcon')"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--champagne-gold); font-size: 1.2rem;">
+                            <i class="fas fa-eye" id="toggleAdminCodeIcon"></i>
+                        </button>
+                    </div>
                     <small class="form-hint">Contact system administrator for access code</small>
                 </div>
 
@@ -91,5 +133,150 @@
             <div class="decoration-circle circle-3"></div>
         </div>
     </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
+
 </html>
+
+<script>
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strength-bar');
+        const strengthText = document.getElementById('strength-text');
+        const strengthContainer = document.getElementById('passwordStrength');
+
+        if (!strengthBar || !strengthText || !strengthContainer || !passwordInput) return true;
+
+        // Requirements
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecial = /[@$!%*?&]/.test(password);
+
+        // Update requirement indicators
+        updateRequirement('req-length', hasLength);
+        updateRequirement('req-uppercase', hasUppercase);
+        updateRequirement('req-lowercase', hasLowercase);
+        updateRequirement('req-number', hasNumber);
+        updateRequirement('req-special', hasSpecial);
+
+        // Calculate strength
+        let strength = 0;
+        if (hasLength) strength++;
+        if (hasUppercase) strength++;
+        if (hasLowercase) strength++;
+        if (hasNumber) strength++;
+        if (hasSpecial) strength++;
+
+        // Show/hide strength indicator
+        if (password.length > 0) {
+            strengthContainer.style.display = 'block';
+
+            // Update strength bar, text, and input border color
+            if (strength <= 2) {
+                // Weak - Red
+                strengthBar.style.background = '#ff4444';
+                strengthBar.style.width = '33%';
+                strengthText.textContent = '● Weak password';
+                strengthText.style.color = '#ff4444';
+                passwordInput.style.borderColor = '#ff4444';
+                passwordInput.style.borderWidth = '2px';
+                passwordInput.style.color = '#ff4444';
+            } else if (strength <= 4) {
+                // Medium - Orange/Yellow
+                strengthBar.style.background = '#ffaa00';
+                strengthBar.style.width = '66%';
+                strengthText.textContent = '● Medium password';
+                strengthText.style.color = '#ffaa00';
+                passwordInput.style.borderColor = '#ffaa00';
+                passwordInput.style.borderWidth = '2px';
+                passwordInput.style.color = '#ffaa00';
+            } else {
+                // Strong - Green
+                strengthBar.style.background = '#00cc66';
+                strengthBar.style.width = '100%';
+                strengthText.textContent = '● Strong password';
+                strengthText.style.color = '#00cc66';
+                passwordInput.style.borderColor = '#00cc66';
+                passwordInput.style.borderWidth = '2px';
+                passwordInput.style.color = '#00cc66';
+            }
+        } else {
+            strengthContainer.style.display = 'none';
+            // Reset input border to default
+            passwordInput.style.borderColor = '';
+            passwordInput.style.borderWidth = '';
+            passwordInput.style.color = '';
+        }
+
+        return hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
+    }
+
+    function updateRequirement(id, met) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        const icon = element.querySelector('.req-icon');
+        if (met) {
+            element.style.color = '#00cc66';
+            if (icon) icon.textContent = '✓';
+        } else {
+            element.style.color = 'var(--soft-cream)';
+            if (icon) icon.textContent = '○';
+        }
+    }
+
+    // Add event listeners
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const form = document.querySelector('.auth-form');
+
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function () {
+                checkPasswordStrength(this.value);
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const password = passwordInput ? passwordInput.value : '';
+                const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+
+                // Check password strength
+                if (passwordInput && !checkPasswordStrength(password)) {
+                    e.preventDefault();
+                    alert('Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)');
+                    passwordInput.focus();
+                    return false;
+                }
+
+                // Check if passwords match
+                if (password && confirmPassword && password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match. Please try again.');
+                    confirmPasswordInput.focus();
+                    return false;
+                }
+            });
+        }
+    });
+</script>

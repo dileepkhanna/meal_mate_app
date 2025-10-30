@@ -20,7 +20,30 @@
         <label for="password">
             <i class="fas fa-lock"></i> Password
         </label>
-        <input type="password" id="password" name="password" required autocomplete="new-password">
+        <div style="position: relative;">
+            <input type="password" id="password" name="password" required autocomplete="new-password" 
+                   style="padding-right: 45px;" minlength="8">
+            <button type="button" onclick="togglePassword('password', 'togglePasswordIcon')" 
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #667eea; font-size: 1.2rem;">
+                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+            </button>
+        </div>
+        <div id="passwordStrength" style="margin-top: 0.5rem; display: none;">
+            <div style="display: flex; gap: 0.25rem; margin-bottom: 0.5rem;">
+                <div id="strength-bar" style="height: 4px; flex: 1; background: #e0e0e0; border-radius: 2px; transition: all 0.3s;"></div>
+            </div>
+            <small id="strength-text" style="font-size: 0.85rem;"></small>
+        </div>
+        <small style="display: block; margin-top: 0.5rem; color: #666; font-size: 0.85rem;">
+            Password must contain:
+            <ul style="margin: 0.25rem 0 0 1.5rem; padding: 0; list-style: none;">
+                <li id="req-length"><span class="req-icon">○</span> At least 8 characters</li>
+                <li id="req-uppercase"><span class="req-icon">○</span> One uppercase letter (A-Z)</li>
+                <li id="req-lowercase"><span class="req-icon">○</span> One lowercase letter (a-z)</li>
+                <li id="req-number"><span class="req-icon">○</span> One number (0-9)</li>
+                <li id="req-special"><span class="req-icon">○</span> One special character (@$!%*?&)</li>
+            </ul>
+        </small>
     </div>
 
     <div class="form-group">
@@ -99,6 +122,130 @@ document.addEventListener('DOMContentLoaded', function() {
             csrfInput.value = csrfToken;
         }
     });
+});
+
+// Toggle password visibility
+function togglePassword(inputId, iconId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+    const strengthContainer = document.getElementById('passwordStrength');
+    
+    // Requirements
+    const hasLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[@$!%*?&]/.test(password);
+    
+    // Update requirement indicators
+    updateRequirement('req-length', hasLength);
+    updateRequirement('req-uppercase', hasUppercase);
+    updateRequirement('req-lowercase', hasLowercase);
+    updateRequirement('req-number', hasNumber);
+    updateRequirement('req-special', hasSpecial);
+    
+    // Calculate strength
+    let strength = 0;
+    if (hasLength) strength++;
+    if (hasUppercase) strength++;
+    if (hasLowercase) strength++;
+    if (hasNumber) strength++;
+    if (hasSpecial) strength++;
+    
+    // Show/hide strength indicator
+    if (password.length > 0) {
+        strengthContainer.style.display = 'block';
+        
+        // Update strength bar, text, and input border color
+        if (strength <= 2) {
+            // Weak - Red
+            strengthBar.style.background = '#ff4444';
+            strengthBar.style.width = '33%';
+            strengthText.textContent = '● Weak password';
+            strengthText.style.color = '#ff4444';
+            passwordInput.style.borderColor = '#ff4444';
+            passwordInput.style.borderWidth = '2px';
+            passwordInput.style.color = '#ff4444';
+        } else if (strength <= 4) {
+            // Medium - Orange/Yellow
+            strengthBar.style.background = '#ffaa00';
+            strengthBar.style.width = '66%';
+            strengthText.textContent = '● Medium password';
+            strengthText.style.color = '#ffaa00';
+            passwordInput.style.borderColor = '#ffaa00';
+            passwordInput.style.borderWidth = '2px';
+            passwordInput.style.color = '#ffaa00';
+        } else {
+            // Strong - Green
+            strengthBar.style.background = '#00cc66';
+            strengthBar.style.width = '100%';
+            strengthText.textContent = '● Strong password';
+            strengthText.style.color = '#00cc66';
+            passwordInput.style.borderColor = '#00cc66';
+            passwordInput.style.borderWidth = '2px';
+            passwordInput.style.color = '#00cc66';
+        }
+    } else {
+        strengthContainer.style.display = 'none';
+        // Reset input border to default
+        passwordInput.style.borderColor = '';
+        passwordInput.style.borderWidth = '';
+        passwordInput.style.color = '';
+    }
+    
+    // Return whether password meets all requirements
+    return hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
+}
+
+function updateRequirement(id, met) {
+    const element = document.getElementById(id);
+    const icon = element.querySelector('.req-icon');
+    if (met) {
+        element.style.color = '#00cc66';
+        icon.textContent = '✓';
+    } else {
+        element.style.color = '#666';
+        icon.textContent = '○';
+    }
+}
+
+// Add event listener for password input
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+        
+        // Validate on form submit
+        const form = document.getElementById('signupForm');
+        form.addEventListener('submit', function(e) {
+            const password = passwordInput.value;
+            if (!checkPasswordStrength(password)) {
+                e.preventDefault();
+                alert('Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)');
+                passwordInput.focus();
+                return false;
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

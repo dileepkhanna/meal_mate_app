@@ -51,29 +51,30 @@ def signup(request):
 # Handle Customer Login
 def handle_login(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        mobile = request.POST.get('mobile')
         password = request.POST.get('password')
 
         from django.contrib.auth import authenticate, login
         
-        # Try to authenticate as Customer
+        # Try to find customer by mobile number
         try:
-            customer = Customer.objects.get(username=username)
-            user = authenticate(request, username=username, password=password)
+            customer = Customer.objects.get(mobile=mobile)
+            # Authenticate using username (since Django auth uses username)
+            user = authenticate(request, username=customer.username, password=password)
             
             if user is not None and isinstance(user, Customer):
                 # Check if user is not staff (regular customer)
                 if not user.is_staff and not user.is_superuser:
                     login(request, user)
-                    return redirect('customer_home', username=username)
+                    return redirect('customer_home', username=user.username)
                 else:
                     messages.error(request, 'Please use admin login for admin accounts.')
                     return redirect('signin')
             else:
-                messages.error(request, 'Invalid username or password.')
+                messages.error(request, 'Invalid phone number or password.')
                 return redirect('signin')
         except Customer.DoesNotExist:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, 'Invalid phone number or password.')
             return redirect('signin')
     else:
         return redirect('signin')
@@ -124,6 +125,24 @@ def handle_signup(request):
         mobile = request.POST.get('mobile')
         address = request.POST.get('address')
 
+        # Validate password strength
+        import re
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return redirect('signup')
+        if not re.search(r'[A-Z]', password):
+            messages.error(request, 'Password must contain at least one uppercase letter.')
+            return redirect('signup')
+        if not re.search(r'[a-z]', password):
+            messages.error(request, 'Password must contain at least one lowercase letter.')
+            return redirect('signup')
+        if not re.search(r'\d', password):
+            messages.error(request, 'Password must contain at least one number.')
+            return redirect('signup')
+        if not re.search(r'[@$!%*?&]', password):
+            messages.error(request, 'Password must contain at least one special character (@$!%*?&).')
+            return redirect('signup')
+
         # Check for duplicate username
         if Customer.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists. Please choose a different username.')
@@ -131,6 +150,10 @@ def handle_signup(request):
         
         if Customer.objects.filter(email=email).exists():
             messages.error(request, 'Email already registered. Please use a different email.')
+            return redirect('signup')
+        
+        if Customer.objects.filter(mobile=mobile).exists():
+            messages.error(request, 'Phone number already registered. Please use a different number.')
             return redirect('signup')
 
         # Create customer user with hashed password (not staff)
@@ -188,6 +211,24 @@ def handle_admin_signup(request):
         # Check if passwords match
         if password != confirm_password:
             messages.error(request, 'Passwords do not match.')
+            return redirect('admin_signup')
+
+        # Validate password strength
+        import re
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return redirect('admin_signup')
+        if not re.search(r'[A-Z]', password):
+            messages.error(request, 'Password must contain at least one uppercase letter.')
+            return redirect('admin_signup')
+        if not re.search(r'[a-z]', password):
+            messages.error(request, 'Password must contain at least one lowercase letter.')
+            return redirect('admin_signup')
+        if not re.search(r'\d', password):
+            messages.error(request, 'Password must contain at least one number.')
+            return redirect('admin_signup')
+        if not re.search(r'[@$!%*?&]', password):
+            messages.error(request, 'Password must contain at least one special character (@$!%*?&).')
             return redirect('admin_signup')
 
         # Check for duplicate username in Customer model
@@ -510,3 +551,153 @@ def orders(request, username):
         'cart_items': cart_items,
         'total_price': total_price,
     })
+
+
+
+
+
+# ================================
+# PASSWORD RESET SYSTEM
+# ================================
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+def forgot_password(request):
+    """Show forgot password page"""
+    if request.method == 'POST':
+        return handle_forgot_password(request)
+    else:
+        get_token(request)
+        return render(request, 'delivery/forgot_password.html')
+
+def handle_forgot_password(request):
+    """Handle forgot password request"""
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier')  # Can be email, username, or phone
+        
+        # Find user by email, username, or phone
+        user = None
+        try:
+            if '@' in identifier:
+                user = Customer.objects.get(email=identifier)
+            elif identifier.isdigit() and len(identifier) == 10:
+                user = Customer.objects.get(mobile=identifier)
+            else:
+                user = Customer.objects.get(username=identifier)
+        except Customer.DoesNotExist:
+            # Don't reveal if user exists or not (security)
+            messages.success(request, 'If an account exists with that information, a password reset link has been sent.')
+            return redirect('signin')
+        
+        # Check if user has email
+        if not user.email:
+            messages.error(request, 'No email associated with this account. Please contact support.')
+            return redirect('forgot_password')
+        
+        # Generate password reset token
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        
+        # Create reset link
+        reset_link = request.build_absolute_uri(
+            f'/reset-password/{uid}/{token}/'
+        )
+        
+        # Send email
+        subject = 'Reset Your Meal Mate Password'
+        message = f"""
+Hello {user.username},
+
+You requested to reset your password for Meal Mate.
+
+Click the link below to reset your password:
+{reset_link}
+
+This link will expire in 1 hour.
+
+If you didn't request this, please ignore this email.
+
+Best regards,
+Meal Mate Team
+"""
+        
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+            messages.success(request, 'Password reset link has been sent to your email.')
+        except Exception as e:
+            print(f"Error sending email: {e}")
+            messages.error(request, 'Failed to send reset email. Please try again.')
+            return redirect('forgot_password')
+        
+        return redirect('signin')
+    
+    return redirect('forgot_password')
+
+def reset_password(request, uidb64, token):
+    """Show reset password page"""
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = Customer.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Customer.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            return handle_reset_password(request, user)
+        else:
+            get_token(request)
+            return render(request, 'delivery/reset_password.html', {
+                'uidb64': uidb64,
+                'token': token,
+                'validlink': True
+            })
+    else:
+        messages.error(request, 'Password reset link is invalid or has expired.')
+        return redirect('forgot_password')
+
+def handle_reset_password(request, user):
+    """Handle password reset submission"""
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect(request.path)
+        
+        # Validate password strength
+        import re
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return redirect(request.path)
+        if not re.search(r'[A-Z]', password):
+            messages.error(request, 'Password must contain at least one uppercase letter.')
+            return redirect(request.path)
+        if not re.search(r'[a-z]', password):
+            messages.error(request, 'Password must contain at least one lowercase letter.')
+            return redirect(request.path)
+        if not re.search(r'\d', password):
+            messages.error(request, 'Password must contain at least one number.')
+            return redirect(request.path)
+        if not re.search(r'[@$!%*?&]', password):
+            messages.error(request, 'Password must contain at least one special character (@$!%*?&).')
+            return redirect(request.path)
+        
+        # Set new password
+        user.set_password(password)
+        user.save()
+        
+        messages.success(request, 'Password reset successful! Please sign in with your new password.')
+        return redirect('signin')
+    
+    return redirect('signin')

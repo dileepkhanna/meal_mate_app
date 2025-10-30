@@ -10,6 +10,12 @@ urlpatterns = [
     path('login/', views.handle_login, name='handle_login'),
     path('signup/submit/', views.handle_signup, name='handle_signup'),
     
+    # Password reset paths
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('forgot-password/submit/', views.handle_forgot_password, name='handle_forgot_password'),
+    path('reset-password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
+    
+
     # Admin authentication paths
     path('ws-admin/signin/', views.admin_signin, name='admin_signin'),
     path('ws-admin1/signup/', views.admin_signup, name='admin_signup'),

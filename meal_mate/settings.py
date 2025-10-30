@@ -161,3 +161,24 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+
+
+
+# Email Configuration for Password Reset
+# For testing: Console backend (prints to terminal)
+# For production: SMTP backend (sends real emails)
+
+# Change this to send real emails:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Real emails
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Console only
+
+# Gmail SMTP Configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'dileeplekkala14@gmail.com')  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'yrhhsukcqcogphgz')  # Your Gmail App Password
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'noreply@mealmate.com')
+
+# Password Reset Settings
+PASSWORD_RESET_TIMEOUT = 3600  # 1 hour (in seconds)

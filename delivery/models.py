@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 class Customer(AbstractUser):
     # Inherits username, password, email, first_name, last_name from AbstractUser
-    mobile = models.CharField(max_length=15, blank=True)
+    mobile = models.CharField(max_length=15, blank=True, unique=True)
     address = models.CharField(max_length=255, blank=True)
     
     # Add related_name to resolve clashes with the default User model
@@ -84,3 +84,4 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.menu_item.name} in {self.cart.customer.username}'s cart"
+

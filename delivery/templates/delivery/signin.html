@@ -10,17 +10,33 @@
     {% csrf_token %}
 
     <div class="form-group">
-        <label for="username">
-            <i class="fas fa-user"></i> Username
+        <label for="mobile">
+            <i class="fas fa-phone"></i> Phone Number
         </label>
-        <input type="text" id="username" name="username" required autocomplete="username">
+        <input type="tel" id="mobile" name="mobile" required autocomplete="tel" placeholder="Enter your phone number"
+            pattern="[0-9]{10}" maxlength="10">
+        <small style="display: block; margin-top: 0.25rem; color: #666; font-size: 0.85rem;">
+            Enter 10-digit mobile number
+        </small>
     </div>
 
     <div class="form-group">
         <label for="password">
             <i class="fas fa-lock"></i> Password
         </label>
-        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <div style="position: relative;">
+            <input type="password" id="password" name="password" required autocomplete="current-password"
+                style="padding-right: 45px;">
+            <button type="button" onclick="togglePassword('password', 'togglePasswordIcon')"
+                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color:var(--champagne-gold); font-size: 1.2rem;">
+                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+            </button>
+        </div>
+        <div style="text-align: right; margin-top: 0.5rem;">
+            <a href="{% url 'forgot_password' %}" style="color:var(--champagne-gold); text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-key"></i> Forgot Password?
+            </a>
+        </div>
     </div>
 
     <div class="form-actions">
@@ -42,42 +58,59 @@
 
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('signinForm');
-    
-    // Get CSRF token from cookie
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('signinForm');
+
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
             }
+            return cookieValue;
         }
-        return cookieValue;
-    }
-    
-    // Verify CSRF token exists before form submission
-    form.addEventListener('submit', function(e) {
-        const csrfToken = getCookie('csrftoken');
-        const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
-        
-        if (!csrfToken || !csrfInput || !csrfInput.value) {
-            e.preventDefault();
-            alert('Security token missing. Please refresh the page and try again.');
-            window.location.reload();
-            return false;
-        }
-        
-        // Update CSRF token in form if cookie value is different
-        if (csrfInput.value !== csrfToken) {
-            csrfInput.value = csrfToken;
-        }
+
+        // Verify CSRF token exists before form submission
+        form.addEventListener('submit', function (e) {
+            const csrfToken = getCookie('csrftoken');
+            const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+
+            if (!csrfToken || !csrfInput || !csrfInput.value) {
+                e.preventDefault();
+                alert('Security token missing. Please refresh the page and try again.');
+                window.location.reload();
+                return false;
+            }
+
+            // Update CSRF token in form if cookie value is different
+            if (csrfInput.value !== csrfToken) {
+                csrfInput.value = csrfToken;
+            }
+        });
     });
-});
+
+    // Toggle password visibility
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
 </script>
 {% endblock %}
